@@ -32,8 +32,3 @@
 - O código é escrito em HTML, CSS e JavaScript puro (sem frameworks).
 - Projeto voltado a propósitos educacionais e prototipagem rápida.
 - Não há backend; todos os envios usam `mailto:` para enviar emails.
-
-## License
-
-Este projeto é fornecido como exemplo e pode ser modificado livremente.
->>>>>>> main
