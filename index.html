@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VALIDATE</title>
+  <!-- Fonts -->
+  <!--
+    Google Fonts removido por solicitação — troquei a importação por um logo local.
+    O arquivo `media/img/Glossary.png` foi adicionado ao header como logo visível;
+    mantive `style.css` para o restante dos estilos.
+  -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-card container">
+      <div class="brand-small">
+        <a href="./" id="home-link" style="text-decoration:none;color:inherit;">
+          <span class="brand-text">BEM VINDO AO VALIDATE</span>
+        </a>
+      </div>
+      <div class="link-group">
+        <a href="https://github.com/nevext" target="_blank" rel="noopener" id="github-link">github</a>
+        <a href="#" id="week-link">week validate</a>
+        <a href="#">ajude-me</a>
+      </div>
+      <div class="button-group">
+        <button id="validate-site-btn" class="btn-validate nav-btn">Validar um site</button>
+        <button id="generate-link-btn" class="btn-validate nav-btn">Gerar link Validate</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- área para validação de URLs (inicialmente oculta) -->
+    <section id="validate-section" class="validate-section hidden-card">
+      <div class="container">
+        <div class="validate-card" id="validate-card">
+          <div id="validate-link-flow" style="display:none;width:100%;min-height:350px;align-items:center;justify-content:center;flex-direction:column;text-align:center;">
+            <h2 style="margin-bottom:18px;">Este é o site que você vai avaliar</h2>
+            <div id="validate-status" style="margin-bottom:10px;font-size:14px;color:#555"></div>
+            <div id="validate-preview" style="margin-bottom:20px;"></div>
+          </div>
+          <div id="validate-normal-flow">
+            <input type="text" id="site-url" placeholder="Cole o link do site aqui" />
+            <button id="submit-url" class="btn-validate">Enviar</button>
+            <div id="result-area"></div>
+            <!-- pergunta de confirmação -->
+            <div id="confirm-area" class="confirm-area" style="display:none;">
+              <p>Este é o site correto?</p>
+              <button id="confirm-yes" class="btn-validate">Sim</button>
+              <button id="confirm-no" class="btn-validate">Não</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- formulário para gerar link Validate -->
+    <section id="link-section" class="validate-section hidden-card">
+      <div class="container">
+        <div class="validate-card">
+          <h3>Gerar link Validate</h3>
+          <p>Link do site:</p>
+          <input type="text" id="link-url" placeholder="https://example.com" />
+          <p>Nome do site:</p>
+          <input type="text" id="link-name" placeholder="Nome do site" />
+          <p>Seu nome:</p>
+          <input type="text" id="creator-name" placeholder="Seu nome" />
+          <p>Seu email:</p>
+          <input type="email" id="creator-email" placeholder="email@exemplo.com" />
+          <p>Tópico:</p>
+          <input type="text" id="link-topic" placeholder="Assunto desejado" />
+          <div class="link-options">
+            <div class="option-group" id="opt-issues">
+              <span>Deseja incluir retorno de issues?</span><br>
+              <button type="button" class="opt-btn yes">Sim</button>
+              <button type="button" class="opt-btn no">Não</button>
+            </div>
+            <div class="option-group" id="opt-feature">
+              <span>Deseja incluir retorno de feature request?</span><br>
+              <button type="button" class="opt-btn yes">Sim</button>
+              <button type="button" class="opt-btn no">Não</button>
+            </div>
+            <div class="option-group" id="opt-task">
+              <span>Deseja incluir retorno de task?</span><br>
+              <button type="button" class="opt-btn yes">Sim</button>
+              <button type="button" class="opt-btn no">Não</button>
+            </div>
+            <div class="option-group" id="opt-ds">
+              <span>Deseja incluir retorno de DS?</span><br>
+              <button type="button" class="opt-btn yes">Sim</button>
+              <button type="button" class="opt-btn no">Não</button>
+            </div>
+          </div>
+          <p><small id="link-timestamp" class="fading"></small></p>
+          <button id="generate-link-submit" class="btn-validate">Gerar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- card exibindo link gerado com opção de copiar -->
+    <section id="link-result" class="validate-section hidden-card">
+      <div class="container">
+        <div class="validate-card">
+          <h3>Link gerado</h3>
+          <p><input type="text" id="generated-link" readonly style="width:100%;"/></p>
+          <div id="link-summary" style="margin-top:10px;font-size:13px;color:#444"></div>
+          <button id="copy-link-btn" class="btn-validate">Copiar link</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- card de boas‑vindas para quem veio por link compartilhado -->
+    <section id="welcome-section" class="validate-section hidden-card">
+      <div class="container">
+        <div class="info-card">
+          <h3>Bem‑vindo ao Validate</h3>
+          <p>Você irá validar um projeto com o link pré‑configurado.</p>
+          <div id="welcome-details"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- cartão informativo para "week validate" -->
+    <section id="week-card" class="validate-section hidden-card">
+      <div class="container">
+        <div class="info-card">
+          <h3>Feature em desenvolvimento</h3>
+          <p>Esta função ainda está sendo trabalhada e não está disponível no momento.</p>
+          <button id="week-close" class="btn-validate">OK</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- cartão com instruções gerais mostrado pelo botão Ajude-me -->
+    <section id="help-section" class="validate-section hidden-card">
+      <div class="container">
+        <div class="info-card">
+          <h3>Como preencher</h3>
+          <p>
+            <strong>Título do teste:</strong> nome do projeto<br>
+            <strong>Email do responsável:</strong> contato para envio<br>
+            <strong>Sua avaliação:</strong> comentários gerais<br>
+            <strong>Status:</strong> aprovado ou reprovado<br>
+            <strong>Issues:</strong> problemas ou correções<br>
+            <strong>Feature request:</strong> novas funcionalidades<br>
+            <strong>Task:</strong> tarefas específicas<br>
+            <strong>DS:</strong> design system/visuais
+          </p>
+          <button id="help-close" class="btn-validate">Entendi</button>
+        </div>
+      </div>
+    </section>
+    <!-- cartão de instruções formal para Ajude-me -->
+    <section id="ajude-card" class="validate-section hidden-card">
+      <div class="container">
+        <div class="info-card" id="ajude-info-card">
+          <div class="ajude-nav" style="display:flex;gap:16px;margin-bottom:24px;justify-content:center;">
+            <button id="ajude-validate-btn" class="btn-validate">Como validar um site</button>
+            <button id="ajude-link-btn" class="btn-validate">Como gerar link Validate</button>
+          </div>
+          <div id="ajude-validate-section" class="ajude-section">
+            <h3>Como validar um site</h3>
+            <p>
+              <strong>Passo 1:</strong> Clique no botão <b>Validar um site</b> localizado no cabeçalho.<br><br>
+              <strong>Passo 2:</strong> Insira o endereço (URL) do site que deseja validar no campo indicado.<br><br>
+              <strong>Passo 3:</strong> Clique em <b>Enviar</b> para iniciar a validação.<br><br>
+              <strong>Passo 4:</strong> Analise o resultado apresentado, incluindo pré-visualização e status.<br><br>
+              <strong>Passo 5:</strong> Caso o site esteja correto, confirme e preencha o formulário de avaliação.<br><br>
+              <strong>Passo 6:</strong> Complete todos os campos obrigatórios, incluindo título, email, status, issues, feature request, task e DS.<br><br>
+              <strong>Passo 7:</strong> Clique em <b>Validar</b> para enviar sua avaliação.<br><br>
+              <strong>Observação:</strong> Certifique-se de revisar todas as informações antes de enviar. O resultado será encaminhado ao responsável pelo projeto.
+            </p>
+          </div>
+          <div id="ajude-link-section" class="ajude-section" style="display:none;">
+            <h3>Como gerar link Validate</h3>
+            <p>
+              <strong>Passo 1:</strong> Clique no botão <b>Gerar link Validate</b> no cabeçalho.<br><br>
+              <strong>Passo 2:</strong> Preencha os campos solicitados: link do site, nome do site, seu nome, email e tópico.<br><br>
+              <strong>Passo 3:</strong> Escolha as opções de retorno desejadas (issues, feature request, task, DS).<br><br>
+              <strong>Passo 4:</strong> Clique em <b>Gerar</b> para criar o link personalizado.<br><br>
+              <strong>Passo 5:</strong> O link gerado será exibido. Utilize o botão <b>Copiar link</b> para compartilhar.<br><br>
+              <strong>Observação:</strong> O link Validate permite que outros usuários avaliem o site de forma rápida e organizada, com campos pré-configurados conforme suas escolhas.
+            </p>
+          </div>
+          <button id="ajude-close" class="btn-validate" style="margin-top:24px;">Fechar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- cartão de avaliação que aparece após confirmação -->
+    <section id="feedback-section" class="validate-section hidden-card">
+      <div class="container">
+        <!-- único card com preview e formulário juntos -->
+        <div class="validate-card" id="feedback-card">
+          <div id="link-info" style="margin-bottom:10px;font-size:14px;color:#555"></div>
+          <div class="preview-card" style="margin-bottom:20px;">
+            <h3>Preview</h3>
+            <div id="feedback-preview" class="feedback-preview"></div>
+            <p id="preview-link-wrap" style="margin-top:8px;"><a id="preview-link" href="#" target="_blank"></a></p>
+          </div>
+          <h3>Avaliação do site</h3>
+          <div class="feedback-form">
+            <p>Título do teste:</p>
+            <input type="text" id="test-title" placeholder="Teste mobile" />
+            <p>Email do responsável:</p>
+            <input type="email" id="responsible-email" placeholder="email@exemplo.com" />
+            <p>Sua avaliação:</p>
+            <textarea id="test-desc" rows="3" placeholder="Digite a descrição..."></textarea>
+            <p>Status:</p>
+            <select id="test-status">
+              <option value="" selected disabled>-- selecione --</option>
+              <option value="aprovado">Aprovado</option>
+              <option value="reprovado">Reprovado</option>
+            </select>
+            <p>Issues:</p>
+            <textarea id="feedback-issues" rows="2" placeholder="Descreva issues..."></textarea>
+            <p>Feature request:</p>
+            <textarea id="feedback-feature" rows="2" placeholder="Descreva feature..."></textarea>
+            <p>Task:</p>
+            <textarea id="feedback-task" rows="2" placeholder="Descreva task..."></textarea>
+            <p>DS:</p>
+            <textarea id="feedback-ds" rows="2" placeholder="Descreva DS..."></textarea>
+            <br /><br />
+            <button id="send-feedback" class="btn-validate">Validar</button>
+            <button id="help-all" class="btn-validate" style="margin-left:12px;background:#555;">Ajude-me</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- card para confirmar se feedback foi enviado com sucesso -->
+    <section id="feedback-result" class="validate-section hidden-card">
+      <div class="container">
+        <div class="info-card">
+          <p id="feedback-result-msg">A validação foi enviada corretamente para o email?</p>
+          <button id="feedback-result-yes" class="btn-validate">Sim</button>
+          <button id="feedback-result-no" class="btn-validate">Não</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- card para avaliação por estrelas após confirmação -->
+    <section id="rating-section" class="validate-section hidden-card">
+      <div class="validate-card">
+        <h3>Avalie sua experiência</h3>
+        <div id="star-rating" class="star-rating" aria-label="Rating">
+          <span data-value="1">★</span>
+          <span data-value="2">★</span>
+          <span data-value="3">★</span>
+          <span data-value="4">★</span>
+          <span data-value="5">★</span>
+        </div>
+        <br />
+        <button id="rating-submit" class="btn-validate">Enviar</button>
+      </div>
+    </section>
+
+    <section class="hero">
+      <h1 class="hero-title"><a href="./" id="hero-home-link" style="text-decoration:none;color:inherit;">VALIDATE</a></h1>
+      <p class="hero-desc">Uma plataforma para validação rápida de seus projetos web por outros colegas, de maneira simples e eficaz. <a href="#" class="hero-link" id="hero-link">Leia mais</a></p>
+    </section>
+
+    <!-- cartão explicativo que aparece ao clicar em "Leia mais" -->
+    <section id="info-card" class="info-card hidden-card">
+      <div class="container">
+        <h2>O que é o Validate?</h2>
+        <p>Este site permite que você submeta seus projetos web para revisão rápida por outros colegas. O objetivo é promover feedback ágil, simples e colaborativo.</p>
+        <button id="info-close" class="btn-validate">Fechar</button>
+      </div>
+    </section>
+
+    <section class="lead container">
+      <!-- Card que agrupa imagem + título + parágrafo + botão -->
+      <div class="lead-card">
+        <div class="lead-grid">
+          <div class="lead-media">
+            <img src="media/img/Glossary.png" alt="Glossário do CIESA" />
+          </div>
+          <div class="lead-text">
+            <h2>GLOSSÁRIO PARA O CIESA</h2>
+            <!-- Parágrafo solicitado — edite o texto abaixo conforme necessário -->
+            <p class="lead-paragraph">Parágrafo explicativo do glossário — insira aqui o conteúdo ou descrição que deve aparecer abaixo do título.</p>
+            <!-- Botão 'Validar' com a mesma família tipográfica local (KazerFluro) -->
+            <button id="validate-glossary" class="btn-validate" aria-label="Validar">Validar</button>
+          </div>
+        </div>
+      </div>
+      <!-- Novo card duplicado usando imagem Bemvindo.png, texto fictício para edição posterior -->
+      <div class="lead-card">
+        <div class="lead-grid">
+          <div class="lead-media">
+            <img src="media/img/Bemvindo.png" alt="Bem-vindo ao Validate" />
+          </div>
+          <div class="lead-text">
+            <h2>BEM VINDO AO CIESA</h2>
+            <p class="lead-paragraph">Um site para os novos estudantes do CIESA</p>
+            <button id="validate-bemvindo" class="btn-validate" aria-label="Validar">Validar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- modal de termos de uso acessível via footer -->
+  <section id="terms-section" class="validate-section hidden-card">
+    <div class="container">
+      <div class="info-card" id="terms-info-card">
+        <h3>Termos de Uso</h3>
+        <p>
+          Ao utilizar as funcionalidades de validação ou geração de link, você concorda com os
+          seguintes termos. A ação final redirecionará você para o seu próprio email, onde deverá
+          enviar a mensagem de validação. Isso implica que você confia no proprietário do site
+          indicado e que concorda em assumir responsabilidade por sua avaliação. Não compartilhe
+          informações confidenciais sem autorização e utilize a plataforma de forma ética e
+          responsável.
+        </p>
+        <button id="terms-close" class="btn-validate">Fechar</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Nevext. Todos os direitos reservados. <a href="https://github.com/nevext" target="_blank" rel="noopener">github.com/nevext</a> · <a href="#" id="footer-terms-link">Termos de Uso</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
