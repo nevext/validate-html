@@ -1,3 +1,4 @@
+alert('Script carregado!');
 // Inicializa observador para revelação suave de cards ao rolar
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,15 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       infoCard.classList.add('show-card');
     });
   }
-  // clicking the brand or hero title should return to main page (clear any params)
-  [homeLink, heroHomeLink].forEach(el => {
-    if (el) {
-      el.addEventListener('click', e => {
-        // let default anchor behavior happen; it points to './'
-        // we could also reset location explicitly if using JS
-      });
-    }
-  });
+  
   if (infoClose && infoCard) {
     infoClose.addEventListener('click', () => {
       infoCard.classList.remove('show-card');
@@ -54,6 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const validateSection = document.getElementById('validate-section');
   const homeLink = document.getElementById('home-link');
   const heroHomeLink = document.getElementById('hero-home-link');
+  // clicking the brand or hero title returns to main page (anchors point to './')
+  [homeLink, heroHomeLink].forEach(el => {
+    if (el) {
+      el.addEventListener('click', e => {
+        // default anchor behavior will navigate to './' and clear params
+      });
+    }
+  });
   const submitUrl = document.getElementById('submit-url');
   const siteUrlInput = document.getElementById('site-url');
   const resultArea = document.getElementById('result-area');
@@ -77,6 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const creatorNameInput = document.getElementById('creator-name');
   const creatorEmailInput = document.getElementById('creator-email');
   const linkTopicInput = document.getElementById('link-topic');
+  // optional checkbox elements (may not exist in current markup)
+  const cbIssues = document.getElementById('cb-issues');
+  const cbFeature = document.getElementById('cb-feature');
+  const cbTask = document.getElementById('cb-task');
+  const cbDs = document.getElementById('cb-ds');
   // option buttons groups
   const issuesYes = document.querySelector('#opt-issues .opt-btn.yes');
   const issuesNo = document.querySelector('#opt-issues .opt-btn.no');
