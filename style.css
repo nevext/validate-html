@@ -317,6 +317,9 @@ main{padding-top:64px}
 .site-footer a{color:#111;text-decoration:none}
 .site-footer a:hover{opacity:0.8}
 
+/* terms link on its own line for clarity */
+.site-footer p a#footer-terms-link{display:block;margin-top:4px;font-size:14px;}
+
 
 /* cartão de informação que aparece ao clicar em "Leia mais" */
 .info-card{
