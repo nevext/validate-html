@@ -432,8 +432,13 @@ main{padding-top:64px}
   .link-group a{font-size:11px}
   .button-group{flex-direction:column;gap:8px;width:100%;margin-top:4px}
   .button-group .btn-validate{width:100%}
-  /* feedback form buttons full width so validate and ajude-me match */
-  .feedback-form .btn-validate {width:100%;margin-top:8px;}
+  /* feedback form buttons styled for better positioning */
+  .feedback-form .btn-validate {
+    width:90%;
+    max-width:320px;
+    margin:4px auto 4px;
+    display:block;
+  }
   /* reset das alterações de deslocamento em telas pequenas */
   .lead-media{transform:none}
   .lead-media img{width:100%;height:auto}
