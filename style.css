@@ -432,12 +432,13 @@ main{padding-top:64px}
   .link-group a{font-size:11px}
   .button-group{flex-direction:column;gap:8px;width:100%;margin-top:4px}
   .button-group .btn-validate{width:100%}
-  /* feedback form buttons full width, stacked vertically */
+  /* feedback form buttons full width, stacked vertically and forced same size */
   .feedback-form .btn-validate {
-    width:100%;
-    max-width:none;
-    margin:4px 0;
-    display:block;
+    width:100% !important;
+    max-width:none !important;
+    margin:4px 0 !important;
+    display:block !important;
+    box-sizing:border-box !important;
   }
   /* reset das alterações de deslocamento em telas pequenas */
   .lead-media{transform:none}
