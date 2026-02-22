@@ -452,9 +452,10 @@ main{padding-top:64px}
   .lead { display: none; }
   /* reduzir padding do container no mobile estreito */
   .container { padding: 18px; }
-  main { padding-top: 100px; }
-  /* garantir espaço suficiente antes do hero para não sobrepor */
-  .hero { padding-top: 40px; }
+  main { padding-top: 120px; }
+  /* garantir espaço suficiente antes do hero e título centralizado */
+  .hero { padding-top: 60px; }
+  .hero-title{font-size:clamp(60px,16vw,100px) !important;}
 }
 
 /* -------------------------------------------------------------
