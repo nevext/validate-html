@@ -99,14 +99,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const linkInfo = document.getElementById('link-info');
 
   // configure redirection for static lead cards
+  const baseUrl = `${window.location.origin}${window.location.pathname}`;
   if (validateGlossaryBtn) {
     validateGlossaryBtn.addEventListener('click', () => {
-      window.open('http://127.0.0.1:5500/index.html?site=https%3A%2F%2Fnevext.github.io%2Fglossario-ingles-ciesa%2F&siteName=Glossary&creator=nevext&email=nevext%40outlook.com&topic=Demo&ts=2026-02-22T08%3A18%3A52.847Z&issues=1&feature=0&task=1&ds=0','_blank');
+      const params = '?site=https%3A%2F%2Fnevext.github.io%2Fglossario-ingles-ciesa%2F&siteName=Glossary&creator=nevext&email=nevext%40outlook.com&topic=Demo&ts=2026-02-22T08%3A18%3A52.847Z&issues=1&feature=0&task=1&ds=0';
+      window.open(baseUrl + params, '_blank');
     });
   }
   if (validateBemvindoBtn) {
     validateBemvindoBtn.addEventListener('click', () => {
-      window.open('http://127.0.0.1:5500/index.html?site=https%3A%2F%2Fnevext.github.io%2Fsite-boas-vindas-ciesa%2F&siteName=Bem+vindo+ao+CIESA&creator=nevext&email=nevext%40outlook.com&topic=Demo&ts=2026-02-22T08%3A20%3A02.210Z&issues=0&feature=1&task=0&ds=0','_blank');
+      const params = '?site=https%3A%2F%2Fnevext.github.io%2Fsite-boas-vindas-ciesa%2F&siteName=Bem+vindo+ao+CIESA&creator=nevext&email=nevext%40outlook.com&topic=Demo&ts=2026-02-22T08%3A20%3A02.210Z&issues=0&feature=1&task=0&ds=0';
+      window.open(baseUrl + params, '_blank');
     });
   }
 
@@ -224,8 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (validateBtn && validateSection) {
       validateBtn.addEventListener('click', () => {
-        // main validate button: reset to homepage instead of opening overlay
-        window.location.href = window.location.origin + window.location.pathname;
+        shiftHeaderUp();
+        validateSection.classList.add('show-card');
+        validateBtn.blur();
       });
       // clicar fora do card fecha e reinicia formulário
       validateSection.addEventListener('click', e => {
