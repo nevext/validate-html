@@ -439,6 +439,11 @@ main{padding-top:64px}
   .lead-paragraph{max-width:100%}
 }
 
+/* ajustes específicos para telas bem pequenas */
+@media (max-width:600px) {
+  .lead { display: none; }
+}
+
 /* -------------------------------------------------------------
    Animação de entrada para cards
    - `.hidden-card` aplica estado inicial invisível e deslocado
