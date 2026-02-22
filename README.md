@@ -22,7 +22,7 @@
 
 ## Uso
 
-1. Abra `index.html` em um servidor local (por exemplo, usando [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) ou `python -m http.server`).
+1. Abra via link disponível no github.
 2. Use os botões no cabeçalho para validar um site ou gerar um link.
 3. Preencha os formulários e siga as instruções apresentadas nos modais.
 4. Para validar usando links pré-configurados, clique nos cartões da página inicial; eles abrirão em nova aba com parâmetros na query string.
@@ -36,4 +36,4 @@
 ## License
 
 Este projeto é fornecido como exemplo e pode ser modificado livremente.
->>>>>>> master
+>>>>>>> main
