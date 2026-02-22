@@ -410,7 +410,7 @@ main{padding-top:64px}
 
 /* Responsivo */
 @media (max-width:900px){
-  .hero-title{font-size:clamp(100px,20vw,180px);letter-spacing:-2px}
+  .hero-title{font-size:clamp(80px,18vw,140px);letter-spacing:-2px;margin-top:20px}
   .hero-desc{margin-top:24px}
   .lead-grid{grid-template-columns:1fr;gap:28px}
   .container{padding:28px}
@@ -452,7 +452,9 @@ main{padding-top:64px}
   .lead { display: none; }
   /* reduzir padding do container no mobile estreito */
   .container { padding: 18px; }
-  main { padding-top: 80px; }
+  main { padding-top: 100px; }
+  /* garantir espaço suficiente antes do hero para não sobrepor */
+  .hero { padding-top: 40px; }
 }
 
 /* -------------------------------------------------------------
