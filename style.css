@@ -17,6 +17,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow-x:hidden}
 body{
+  /* flex layout pushes footer to bottom */
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
   /* Mantive 'Poppins' para corpo por legibilidade; fluro é usado para títulos e elementos de destaque */
   font-family:'Poppins', system-ui,-apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background:#f6f6f5;
@@ -25,6 +29,7 @@ body{
   -moz-osx-font-smoothing:grayscale;
   line-height:1.2;
 }
+main{flex:1;}
 
 /* -----------------------------
    Ajustes rápidos (mude aqui)
@@ -452,10 +457,11 @@ main{padding-top:64px}
   .lead { display: none; }
   /* reduzir padding do container no mobile estreito */
   .container { padding: 18px; }
-  main { padding-top: 120px; }
+  main { padding-top: 160px; min-height: calc(100vh - 120px); }
   /* garantir espaço suficiente antes do hero e título centralizado */
-  .hero { padding-top: 60px; }
-  .hero-title{font-size:clamp(60px,16vw,100px) !important;}
+  .hero { padding-top: 80px; }
+  .hero-title{font-size:clamp(50px,14vw,90px) !important;}
+  .hero-desc{margin-top:40px;}
 }
 
 /* -------------------------------------------------------------
