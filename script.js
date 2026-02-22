@@ -1,7 +1,8 @@
-alert('Script carregado!');
-// Inicializa observador para revelação suave de cards ao rolar
-
-document.addEventListener('DOMContentLoaded', () => {
+// Inicialização segura: garante registro dos event listeners
+// mesmo que o script seja executado após o evento DOMContentLoaded.
+(function(){
+  console.log('script.js: inicializando...');
+  function init(){
   const cards = document.querySelectorAll('.lead-card');
 
   // aplica estado inicial escondido
@@ -879,4 +880,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 1500);
     });
   }
-});
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
