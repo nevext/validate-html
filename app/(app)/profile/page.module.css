@@ -1,0 +1,10 @@
+.page{max-width:640px}
+
+.title{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(26px,4vw,36px);
+  letter-spacing:-1px;
+  color:#111;
+  margin-bottom:24px;
+}

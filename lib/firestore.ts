@@ -7,6 +7,7 @@
 //   pra não precisar de um get() cruzado até o projeto).
 // - validations: criação aberta pra qualquer um (são anônimas, por design),
 //   mas sem permitir update/delete — validações devem ser imutáveis.
+// - users: leitura/escrita só do próprio dono (request.auth.uid == doc id).
 
 import {
   addDoc,
@@ -15,6 +16,7 @@ import {
   getDoc,
   getDocs,
   query,
+  setDoc,
   Timestamp,
   updateDoc,
   where,
@@ -153,4 +155,23 @@ export async function getValidationsByBuild(buildId: string): Promise<Validation
   const snapshot = await getDocs(query(validationsCollection, where("buildId", "==", buildId)));
   const validations = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }) as ValidationDoc);
   return sortByCreatedAtDesc(validations);
+}
+
+// ---------- user profile ----------
+
+export interface UserProfile {
+  course: string;
+  university: string;
+}
+
+const usersCollection = collection(db, "users");
+
+export async function getUserProfile(uid: string): Promise<UserProfile | null> {
+  const docSnap = await getDoc(doc(usersCollection, uid));
+  if (!docSnap.exists()) return null;
+  return docSnap.data() as UserProfile;
+}
+
+export async function upsertUserProfile(uid: string, data: UserProfile): Promise<void> {
+  await setDoc(doc(usersCollection, uid), data, { merge: true });
 }

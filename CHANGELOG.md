@@ -2,6 +2,21 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Página de perfil: foto, nome, curso, faculdade, trocar senha
+
+**O que mudou:**
+- `lib/firebase.ts`: agora também exporta `storage` (`getStorage`), usando o `storageBucket` que já estava no config.
+- `lib/firestore.ts`: nova coleção `users/{uid}` (`getUserProfile`/`upsertUserProfile`) pra `curso` e `faculdade` — campos que não existem no perfil do Firebase Auth. Nome e foto continuam no Auth (`updateProfile`), sem duplicar.
+- `lib/storage.ts` (novo): `uploadProfilePhoto(uid, file)` via Firebase Storage, com um timeout de 12s — o SDK do Storage fica tentando de novo (retry/backoff) em falha de rede/CORS antes de desistir, o que travava a tela "Salvando..." por bastante tempo quando o bucket não está disponível.
+- `lib/auth-actions.ts`: `changePassword(senhaAtual, novaSenha)` — reautentica com a senha atual (`reauthenticateWithCredential`) antes de chamar `updatePassword`, porque o Firebase exige login "recente" pra essa operação.
+- `components/ProfileForm.tsx` + `app/(app)/profile/page.tsx` (novos): formulário de dados (foto com preview, nome, curso, faculdade) e formulário separado de trocar senha. Se o upload da foto falhar, nome/curso/faculdade são salvos mesmo assim — só a foto fica de fora, com aviso específico.
+
+**⚠️ Isso responde sua pergunta "precisa adicionar algo novo no Firebase?": SIM.** Testei o upload de foto contra o projeto real e **o Firebase Storage não está habilitado** — a chamada falha por CORS (o bucket não existe de fato ainda). Pra foto de perfil funcionar, é preciso ir no console do Firebase → Build → Storage → "Get started" e habilitar (pode ficar em modo de teste, como o Firestore). Sem isso, o formulário salva nome/curso/faculdade normalmente e mostra um aviso claro de que a foto não foi enviada — não fica travado nem finge que funcionou.
+
+**Testado contra o Firebase real:** nome/curso/faculdade — salvei, recarreguei a página e os dados persistiram, e o nome novo apareceu na sidebar; senha — troquei, deslogei, e logei de novo só com a senha nova, confirmando que mudou de verdade; foto — confirmei o timeout gracioso com a mensagem certa (Storage indisponível).
+
+**Limitação conhecida:** `changePassword` assume que o usuário tem uma senha (conta criada por email/senha). Quem entrou só pelo Google não tem senha pra reautenticar, então essa parte do formulário não funciona pra essas contas — não tratei esse caso especial.
+
 ## 2026-06-21 — Área logada separada: grupos de rotas, sidebar, hub "Projetos"
 
 **Por que separar em grupos de rotas:** pra área logada (onde "acontece tudo") ficar visualmente diferente da home/marketing, sem duplicar `<RequireAuth>` em cada página, a forma mais limpa no App Router é dois grupos de rotas com layouts próprios. Grupos (`(marketing)`, `(app)`) não aparecem na URL, só organizam o layout.

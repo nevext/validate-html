@@ -1,0 +1,50 @@
+.wrapper{display:flex;flex-direction:column;gap:24px;max-width:480px}
+
+.form{
+  background:#fff;
+  border:1px solid var(--border-color);
+  padding:24px;
+  border-radius:6px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.formTitle{font-family:var(--font-kazer-fluro), sans-serif;font-size:18px;margin-bottom:16px}
+
+.photoRow{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+
+.photoPreview{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid var(--border-color);
+}
+
+.photoPlaceholder{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#111;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-size:24px;
+}
+
+.fileInput{font-size:13px}
+
+.fieldLabel{display:block;font-size:13px;font-weight:600;color:#555;margin:14px 0 6px}
+
+.input{
+  width:100%;
+  padding:8px 12px;
+  border:1px solid #ccc;
+  border-radius:4px;
+  font-family:var(--font-poppins), sans-serif;
+  font-size:14px;
+}
+
+.error{color:#c0392b;font-size:13px;margin:12px 0}
+.success{color:#2e7d32;font-size:13px;margin:12px 0}

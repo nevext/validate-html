@@ -1,8 +1,11 @@
 import {
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
   GoogleAuthProvider,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updatePassword,
   updateProfile,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
@@ -64,6 +67,28 @@ export async function loginWithGoogle(): Promise<{ error?: string; cancelled?: b
   } catch (error) {
     if (error instanceof FirebaseError && error.code === "auth/popup-closed-by-user") {
       return { cancelled: true };
+    }
+    return { error: mapAuthError(error) };
+  }
+}
+
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string
+): Promise<{ error?: string }> {
+  const user = auth.currentUser;
+  if (!user || !user.email) {
+    return { error: "Você precisa estar logado." };
+  }
+
+  try {
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+    await updatePassword(user, newPassword);
+    return {};
+  } catch (error) {
+    if (error instanceof FirebaseError && error.code === "auth/invalid-credential") {
+      return { error: "Senha atual incorreta." };
     }
     return { error: mapAuthError(error) };
   }
