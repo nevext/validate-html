@@ -1,0 +1,53 @@
+.title{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,40px);
+  letter-spacing:-1px;
+  color:#111;
+  margin-bottom:8px;
+}
+
+.subtitle{color:#555;font-size:15px;margin-bottom:32px}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  max-width:760px;
+}
+
+.card{
+  display:block;
+  background:#fff;
+  border:1px solid var(--border-color);
+  border-radius:6px;
+  padding:20px;
+  text-decoration:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+
+.card:hover{border-color:#bbb;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+
+.cardTitle{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:16px;
+  color:#111;
+  margin-bottom:6px;
+}
+
+.cardDescription{font-size:13px;color:#666;line-height:1.5}
+
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  font-size:12px;
+  color:#888;
+  background:#f6f6f5;
+  padding:3px 8px;
+  border-radius:4px;
+}
+
+@media (max-width:600px){
+  .grid{grid-template-columns:1fr}
+}

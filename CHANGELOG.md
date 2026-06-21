@@ -2,6 +2,22 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Área logada separada: grupos de rotas, sidebar, hub "Projetos"
+
+**Por que separar em grupos de rotas:** pra área logada (onde "acontece tudo") ficar visualmente diferente da home/marketing, sem duplicar `<RequireAuth>` em cada página, a forma mais limpa no App Router é dois grupos de rotas com layouts próprios. Grupos (`(marketing)`, `(app)`) não aparecem na URL, só organizam o layout.
+
+**O que mudou:**
+- `app/layout.tsx` (raiz) ficou só com `html`/`body`, fontes e `AuthProvider` — sem Header/Footer.
+- `app/(marketing)/layout.tsx` (novo): tem o `<Header/>` + `<Footer/>` de sempre. Pra dentro dele foram movidas: home, `/login`, `/signup`, `/privacidade`, `/p/[slug]` — nenhuma URL mudou.
+- `app/(app)/layout.tsx` (novo): shell da área logada — `<RequireAuth>` uma vez só, envolvendo uma barra lateral (`components/Sidebar.tsx`) + o conteúdo da página, com fundo branco e sem o hero/tipografia gigante da home, de propósito bem diferente visualmente. Pra dentro dele foram movidas `/create`, `/dashboard`, `/builds/new` (removi o `<RequireAuth>` que cada uma tinha individualmente, já que o layout cobre todas).
+- `components/Sidebar.tsx` (novo): "Visão geral", "Submeter projeto", "Projetos em andamento", "Tutorial de submissão", "Tutorial de teste", "Meu perfil" e Sair, com o link ativo destacado. Em telas pequenas vira uma barra horizontal com scroll.
+- `app/(app)/projects/page.tsx` (novo): hub que o botão "Projetos" do header abre — um menu com 4 cards (submeter novo projeto, projetos em andamento — já mostra quantos projetos existem —, tutorial de submissão, tutorial de teste).
+- `app/(app)/projects/tutorial-submissao/page.tsx` e `tutorial-teste/page.tsx` (novos): **textos iniciais — rascunhos pra você revisar**, passo a passo de como criar/compartilhar um projeto e de como funciona o checklist pra quem valida.
+
+**Pendência:** o link "Meu perfil" na sidebar e o nome clicável no header (desde a etapa anterior) ainda apontam pra `/profile`, que chega na próxima entrada.
+
+**Testado contra o Firebase real:** deslogado, `/projects` redireciona pra `/login`; logado, naveguei entre os itens da sidebar (incluindo criar um projeto e ver no dashboard, tudo dentro do shell novo) e confirmei que `/p/[slug]` continua público, sem o shell da área logada.
+
 ## 2026-06-21 — Header novo: marca, navegação e estado logado
 
 **O que mudou:**

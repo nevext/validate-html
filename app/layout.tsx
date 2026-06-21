@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { kazerFluro, poppins } from "./fonts";
 import { AuthProvider } from "@/components/AuthProvider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,11 +24,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br" className={`${kazerFluro.variable} ${poppins.variable}`}>
       <body>
-        <AuthProvider>
-          <Header />
-          <main className="site-main">{children}</main>
-          <Footer />
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

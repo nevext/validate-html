@@ -1,8 +1,4 @@
-.page{
-  padding-top:40px;
-  padding-bottom:60px;
-  max-width:640px;
-}
+.page{max-width:960px}
 
 .title{
   font-family:var(--font-kazer-fluro), sans-serif;
@@ -13,4 +9,4 @@
   margin-bottom:12px;
 }
 
-.subtitle{color:#555;font-size:15px;line-height:1.6;margin-bottom:32px}
+.subtitle{color:#555;font-size:15px;margin-bottom:32px}
