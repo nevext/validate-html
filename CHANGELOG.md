@@ -2,6 +2,17 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Prisma + SQLite para contas de usuário
+
+**O que mudou:**
+- Adicionado `prisma/schema.prisma` com o modelo `User` (id, name, email único, passwordHash, createdAt) — único dado que passa a ter persistência real nesta fase; projetos/checklist/respostas continuam mockados.
+- `lib/prisma.ts` com singleton do `PrismaClient` (evita múltiplas conexões em dev com hot-reload).
+- Banco SQLite local (`prisma/dev.db`, gitignored) criado via `npx prisma migrate dev --name init`; migration SQL versionada em `prisma/migrations/`.
+- `.env` (gitignored) e `.env.example` (commitado) com `DATABASE_URL` e `AUTH_SECRET`.
+- Dependências novas: `@prisma/client` e `prisma` (devDependency), fixadas em `6.19.3` — a versão mais recente (7.x) removeu o suporte a `url` direto no `datasource` do schema, exigindo driver adapters extras; a 6.x mantém a configuração simples planejada para este protótipo.
+
+**Por quê:** login/cadastro de quem cria projetos precisa de persistência real, mesmo com o resto do app ainda mockado, conforme pedido. SQLite via Prisma é a opção mais simples de configurar localmente sem depender de um serviço de banco externo.
+
 ## 2026-06-20 — Migração para Next.js (App Router + TypeScript)
 
 **O que mudou:**
