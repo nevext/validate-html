@@ -2,6 +2,16 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Checklist adaptativo por tipo de conteúdo
+
+**O que mudou:**
+- `lib/checklists.ts` (novo): um mapa `ContentType -> perguntas`, cada pergunta com `key`, `label` em linguagem simples e `type` (`stars` ou `boolean`). Perguntas diferentes pra `link` (aparência, funcionou no celular, link quebrado, texto claro, velocidade), `file` (instalou sem problema, travou, toque, intuitivo), `video` (sincronia, qualidade, clareza, duração) e `document` (legibilidade, erros de português, precisão das informações).
+- `components/BooleanRating.tsx` (novo): par de botões Sim/Não pra perguntas booleanas, mesma linguagem visual do `StarRating` já existente.
+- `components/ValidationForm.tsx` reescrito: recebe `buildId` + `contentType`, renderiza as perguntas certas pra aquele tipo de conteúdo (estrela ou sim/não) e monta o `ratings` dinamicamente antes de gravar a validação.
+- `app/p/[slug]/page.tsx`: busca a build pelo slug, depois o projeto (pra saber o `contentType` certo pro checklist); mostra o `ownerNote` da build (se houver) num destaque visual antes do preview do conteúdo.
+
+**Testado contra o Firestore real:** abri a página pública de uma build do tipo `link`, vi as 5 perguntas certas (estrela e sim/não misturados), enviei a validação e confirmei que ficou registrada com a chave de cada pergunta dentro de `ratings`.
+
 ## 2026-06-21 — Modelo de dados: Project → Validations vira Project → Builds → Validations
 
 **Por que essa mudança (e não é só visual):** até aqui, cada projeto tinha um único link/conteúdo e recebia validações direto. Isso não dava pra representar versões: se o dono corrigia algo e queria testar de novo, não tinha como ligar a nova rodada de feedback à anterior, nem mostrar pra quem ia validar o que já tinha mudado. A partir de agora, um **projeto** (`title`, `contentType`, `ownerId`) pode ter várias **builds** — cada build é uma versão concreta, com seu próprio link público (`slug`), conteúdo (`contentUrl`), nota do dono pra quem for testar (`ownerNote`), selo de status manual (`status`) e, opcionalmente, uma referência à build anterior (`previousBuildId`). As validações passam a apontar pra uma build (`buildId`), não mais pro projeto direto.

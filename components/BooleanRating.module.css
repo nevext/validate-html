@@ -1,0 +1,23 @@
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.label{font-size:14px;color:#222}
+
+.options{display:flex;gap:6px}
+
+.optBtn{
+  padding:6px 14px;
+  border:1px solid #ccc;
+  background:#f0f0f0;
+  cursor:pointer;
+  border-radius:4px;
+  color:#000;
+  font-size:13px;
+}
+
+.optBtn.selected.yes{background:#4caf50;color:#fff;border-color:#4caf50}
+.optBtn.selected.no{background:#f44336;color:#fff;border-color:#f44336}

@@ -22,3 +22,25 @@
   letter-spacing:-1px;
   color:#111;
 }
+
+.buildLabel{color:#888;font-weight:400;font-size:0.55em}
+
+.ownerNote{
+  background:#fff;
+  border:1px solid var(--border-color);
+  border-left:3px solid var(--accent);
+  padding:14px 16px;
+  border-radius:4px;
+  margin-bottom:24px;
+  font-size:14px;
+  color:#333;
+}
+
+.ownerNoteLabel{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  font-size:11px;
+  color:#888;
+  margin-bottom:6px;
+}

@@ -3,29 +3,42 @@
 import { useState } from "react";
 import Button from "./Button";
 import StarRating from "./StarRating";
-import { createValidation } from "@/lib/firestore";
+import BooleanRating from "./BooleanRating";
+import { checklists } from "@/lib/checklists";
+import { createValidation, type ContentType } from "@/lib/firestore";
 import styles from "./ValidationForm.module.css";
 
-export default function ValidationForm({ projectId }: { projectId: string }) {
-  const [designRating, setDesignRating] = useState(0);
-  const [uxRating, setUxRating] = useState(0);
+export default function ValidationForm({
+  buildId,
+  contentType,
+}: {
+  buildId: string;
+  contentType: ContentType;
+}) {
+  const questions = checklists[contentType];
+  const [ratings, setRatings] = useState<Record<string, number>>({});
   const [bugs, setBugs] = useState("");
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  function setRating(key: string, value: number) {
+    setRatings((prev) => ({ ...prev, [key]: value }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (designRating === 0 || uxRating === 0) {
-      setError("Dê uma nota de 1 a 5 estrelas para Design e UX.");
+    const answeredAll = questions.every((q) => ratings[q.key] !== undefined);
+    if (!answeredAll) {
+      setError("Responda todas as perguntas do checklist.");
       return;
     }
 
     setError("");
     setPending(true);
     try {
-      await createValidation({ projectId, designRating, uxRating, bugs, comment });
+      await createValidation({ buildId, ratings, bugs, comment });
       setSubmitted(true);
     } catch {
       setError("Não foi possível enviar sua validação. Tente novamente.");
@@ -47,8 +60,23 @@ export default function ValidationForm({ projectId }: { projectId: string }) {
     <form className={styles.form} onSubmit={handleSubmit}>
       <h3>Checklist de validação</h3>
 
-      <StarRating label="Design" value={designRating} onChange={setDesignRating} />
-      <StarRating label="UX" value={uxRating} onChange={setUxRating} />
+      {questions.map((question) =>
+        question.type === "stars" ? (
+          <StarRating
+            key={question.key}
+            label={question.label}
+            value={ratings[question.key] ?? 0}
+            onChange={(value) => setRating(question.key, value)}
+          />
+        ) : (
+          <BooleanRating
+            key={question.key}
+            label={question.label}
+            value={ratings[question.key] ?? null}
+            onChange={(value) => setRating(question.key, value)}
+          />
+        )
+      )}
 
       <label className={styles.fieldLabel} htmlFor="bugs">
         Bugs encontrados
@@ -70,7 +98,7 @@ export default function ValidationForm({ projectId }: { projectId: string }) {
         rows={4}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder="O que achou? Sugestões, observações sobre design ou UX..."
+        placeholder="O que achou? Sugestões, observações..."
         className={styles.textarea}
       />
 
