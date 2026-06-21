@@ -1,43 +1,79 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/Button";
-import { signUp } from "@/lib/actions/auth";
+import { signUp } from "@/lib/auth-actions";
 import styles from "./page.module.css";
 
 export default function SignupPage() {
-  const [state, formAction, pending] = useActionState(signUp, null);
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setPending(true);
+    const result = await signUp(name, email, password);
+    setPending(false);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    router.push("/create");
+  }
 
   return (
     <section className={`${styles.page} container`}>
       <div className={styles.card}>
         <h1 className={styles.title}>Criar conta</h1>
-        <form className={styles.form} action={formAction}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.fieldLabel} htmlFor="name">
             Nome
           </label>
-          <input id="name" name="name" type="text" required className={styles.input} placeholder="Seu nome" />
+          <input
+            id="name"
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={styles.input}
+            placeholder="Seu nome"
+          />
 
           <label className={styles.fieldLabel} htmlFor="email">
             Email
           </label>
-          <input id="email" name="email" type="email" required className={styles.input} placeholder="email@exemplo.com" />
+          <input
+            id="email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            placeholder="email@exemplo.com"
+          />
 
           <label className={styles.fieldLabel} htmlFor="password">
             Senha
           </label>
           <input
             id="password"
-            name="password"
             type="password"
             required
             minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
             placeholder="mínimo 6 caracteres"
           />
 
-          {state?.error && <p className={styles.error}>{state.error}</p>}
+          {error && <p className={styles.error}>{error}</p>}
 
           <Button type="submit" fullWidth disabled={pending}>
             {pending ? "Criando conta..." : "Criar conta"}

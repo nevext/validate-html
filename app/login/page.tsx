@@ -1,30 +1,64 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/Button";
-import { login } from "@/lib/actions/auth";
+import { login } from "@/lib/auth-actions";
 import styles from "./page.module.css";
 
 export default function LoginPage() {
-  const [state, formAction, pending] = useActionState(login, null);
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setPending(true);
+    const result = await login(email, password);
+    setPending(false);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    router.push("/create");
+  }
 
   return (
     <section className={`${styles.page} container`}>
       <div className={styles.card}>
         <h1 className={styles.title}>Entrar</h1>
-        <form className={styles.form} action={formAction}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.fieldLabel} htmlFor="email">
             Email
           </label>
-          <input id="email" name="email" type="email" required className={styles.input} placeholder="email@exemplo.com" />
+          <input
+            id="email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            placeholder="email@exemplo.com"
+          />
 
           <label className={styles.fieldLabel} htmlFor="password">
             Senha
           </label>
-          <input id="password" name="password" type="password" required className={styles.input} placeholder="••••••••" />
+          <input
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+            placeholder="••••••••"
+          />
 
-          {state?.error && <p className={styles.error}>{state.error}</p>}
+          {error && <p className={styles.error}>{error}</p>}
 
           <Button type="submit" fullWidth disabled={pending}>
             {pending ? "Entrando..." : "Entrar"}

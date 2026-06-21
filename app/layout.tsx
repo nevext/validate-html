@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { kazerFluro, poppins } from "./fonts";
+import { AuthProvider } from "@/components/AuthProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "VALIDATE",
@@ -27,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="pt-br" className={`${kazerFluro.variable} ${poppins.variable}`}>
       <body>
-        <Header />
-        <main className="site-main">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main className="site-main">{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

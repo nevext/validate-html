@@ -1,11 +1,13 @@
+"use client";
+
 import Link from "next/link";
-import { auth } from "@/auth";
+import { useAuth } from "./AuthProvider";
 import Button from "./Button";
 import SignOutButton from "./SignOutButton";
 import styles from "./Header.module.css";
 
-export default async function Header() {
-  const session = await auth();
+export default function Header() {
+  const { user, loading } = useAuth();
 
   return (
     <header className={styles.siteHeader}>
@@ -20,22 +22,23 @@ export default async function Header() {
             github
           </a>
           <Link href="/dashboard">dashboard</Link>
-          {session?.user && <span className={styles.userName}>{session.user.name}</span>}
+          {user && <span className={styles.userName}>{user.displayName}</span>}
         </nav>
         <div className={styles.buttonGroup}>
-          {session?.user ? (
-            <>
-              <Button href="/create">Criar projeto</Button>
-              <SignOutButton />
-            </>
-          ) : (
-            <>
-              <Button href="/login" variant="secondary">
-                Entrar
-              </Button>
-              <Button href="/signup">Cadastrar</Button>
-            </>
-          )}
+          {!loading &&
+            (user ? (
+              <>
+                <Button href="/create">Criar projeto</Button>
+                <SignOutButton />
+              </>
+            ) : (
+              <>
+                <Button href="/login" variant="secondary">
+                  Entrar
+                </Button>
+                <Button href="/signup">Cadastrar</Button>
+              </>
+            ))}
         </div>
       </div>
     </header>

@@ -2,6 +2,21 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 2: autenticação)
+
+**O que mudou:**
+- Removidos `auth.ts`, `lib/prisma.ts`, `lib/auth-helpers.ts`, `lib/actions/auth.ts`, `app/api/auth/[...nextauth]/`, `types/next-auth.d.ts` e a pasta `prisma/` inteira (schema, migrations, banco SQLite). Dependências removidas: `next-auth`, `prisma`, `@prisma/client`, `bcryptjs`, `@types/bcryptjs`.
+- `components/AuthProvider.tsx`: contexto + hook `useAuth()` (`user`, `loading`) via `onAuthStateChanged` do Firebase. Envolve o app inteiro em `app/layout.tsx`.
+- `lib/auth-actions.ts`: `login()`/`signUp()` usando `signInWithEmailAndPassword`/`createUserWithEmailAndPassword` + `updateProfile` (nome), com mapeamento dos códigos de erro do Firebase para mensagens em português.
+- `app/login/page.tsx` e `app/signup/page.tsx`: viraram client components com `useState`, chamando as funções acima (antes eram server actions do Auth.js).
+- `components/Header.tsx` e `components/SignOutButton.tsx`: reescritos para usar `useAuth()`/`signOut` do Firebase em vez da sessão do Auth.js.
+- `components/RequireAuth.tsx` (novo): protege `/create` e `/dashboard` no cliente — mostra "Carregando...", redireciona pra `/login` se não houver usuário. Importante: como o SDK usado é o client (`firebase`, não `firebase-admin`), não existe mais sessão verificada no servidor; a proteção dessas rotas passou a ser client-side.
+- `app/layout.tsx`: removido `export const dynamic = "force-dynamic"` (só existia por causa do cache da sessão do Auth.js; sem sessão de servidor, não faz mais sentido) — `/`, `/create`, `/dashboard`, `/login` e `/signup` voltaram a ser estáticos.
+
+**Testado de ponta a ponta contra o projeto Firebase real (`validate-node-d42b8`):** cadastro cria usuário de verdade e loga automático, `/create` redireciona pra `/login` quando deslogado, login funciona, logout funciona.
+
+**Bug encontrado e corrigido no caminho:** ao clicar em "Sair" estando em `/create` ou `/dashboard`, o próprio botão tentava navegar pra `/` ao mesmo tempo que o `RequireAuth` da página redirecionava pra `/login` (a sessão cai, o `RequireAuth` reage) — uma corrida entre os dois redirecionamentos, e `/login` sempre vencia. `SignOutButton` agora só força a navegação pra `/` quando a página atual não é protegida; em páginas protegidas, deixa o `RequireAuth` cuidar do redirecionamento.
+
 ## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 1: config)
 
 **O que mudou:**

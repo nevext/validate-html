@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireUser } from "@/lib/auth-helpers";
+import RequireAuth from "@/components/RequireAuth";
 import { projects, getResponsesByProjectId, getApprovalRate } from "@/lib/mock-data";
 import styles from "./page.module.css";
 
@@ -11,9 +11,7 @@ function formatDate(iso: string) {
   });
 }
 
-export default async function DashboardPage() {
-  await requireUser();
-
+function DashboardBody() {
   return (
     <section className={`${styles.page} container`}>
       <h1 className={styles.title}>Dashboard</h1>
@@ -86,5 +84,13 @@ export default async function DashboardPage() {
         })}
       </div>
     </section>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <RequireAuth>
+      <DashboardBody />
+    </RequireAuth>
   );
 }
