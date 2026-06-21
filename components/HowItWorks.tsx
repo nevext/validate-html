@@ -1,9 +1,18 @@
 import styles from "./HowItWorks.module.css";
 
 const steps = [
-  { title: "1. Suba o link", description: "Site, vídeo, doc ou app" },
-  { title: "2. Compartilhe", description: "Um link, sem login pra validar" },
-  { title: "3. Veja o resultado", description: "Checklist e comentários no painel" },
+  {
+    title: "1. Crie um projeto e sua primeira build",
+    description: "Defina o tipo de conteúdo e gere o link",
+  },
+  {
+    title: "2. Compartilhe e receba feedback",
+    description: "Checklist adaptado ao tipo de conteúdo, sem login pra validar",
+  },
+  {
+    title: "3. Evolua build após build",
+    description: "Veja o histórico, crie a próxima a partir da anterior, acompanhe a evolução",
+  },
 ];
 
 export default function HowItWorks() {

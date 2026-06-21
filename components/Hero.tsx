@@ -13,18 +13,19 @@ export default function Hero() {
         <div className={styles.copy}>
           <h1 className={styles.title}>
             <span className={styles.titleLine}>
-              Pare de perguntar <q>vê aí se tá bom</q>
+              Teste cada <span className={styles.accentWord}>build</span>.
             </span>
-            <span className={styles.titleAccent}>Valida aí.</span>
+            <span className={styles.titleLine}>Acompanhe cada evolução.</span>
           </h1>
           <p className={styles.description}>
-            Deixe que respondam num checklist real — design, UX e bugs — direto no link que você
-            gerou.
+            Gere um link por versão do seu projeto. Quem testar avalia design, UX e bugs — e você
+            compara com a build anterior.
           </p>
           <Button href="/create">Gerar meu link →</Button>
         </div>
 
         <div className={styles.demoCard}>
+          <div className={styles.demoBuildLabel}>Build 2</div>
           <div className={styles.demoLink}>validate.com/p/9kX2a</div>
           {demoChecklist.map((item) => (
             <div key={item.label} className={styles.demoRow}>

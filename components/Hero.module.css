@@ -14,23 +14,13 @@
 .titleLine{
   font-family:var(--font-kazer-fluro), sans-serif;
   font-weight:700;
-  font-size:clamp(26px,4vw,40px);
-  line-height:1.15;
+  font-size:clamp(32px,5vw,52px);
+  line-height:1.1;
   letter-spacing:-0.5px;
   color:var(--foreground);
 }
 
-.titleLine q{font-style:italic}
-
-.titleAccent{
-  font-family:var(--font-kazer-fluro), sans-serif;
-  font-weight:700;
-  font-size:clamp(38px,6vw,64px);
-  line-height:1.05;
-  letter-spacing:-1px;
-  color:var(--accent);
-  margin-top:4px;
-}
+.accentWord{color:var(--accent)}
 
 .description{
   font-family:var(--font-poppins), sans-serif;
@@ -47,6 +37,15 @@
   padding:20px;
   border-radius:6px;
   box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.demoBuildLabel{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  font-size:11px;
+  color:#888;
+  margin-bottom:6px;
 }
 
 .demoLink{
@@ -82,6 +81,5 @@
 
 @media (max-width:600px){
   .hero{padding:32px 0}
-  .titleLine{font-size:clamp(22px,7vw,30px)}
-  .titleAccent{font-size:clamp(32px,11vw,48px)}
+  .titleLine{font-size:clamp(28px,9vw,38px)}
 }

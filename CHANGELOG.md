@@ -2,6 +2,13 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Copy da home atualizada pro conceito de builds
+
+**O que mudou:**
+- `components/Hero.tsx`: novo título "Teste cada **build**. Acompanhe cada evolução." (só a palavra "build" em `var(--accent)`, não a frase toda — diferente do destaque anterior, que era uma linha inteira); novo parágrafo; card de demonstração ganhou um rótulo "Build 2" acima do link, pra contextualizar o exemplo no conceito de versões.
+- `components/HowItWorks.tsx`: os 3 passos atualizados — "Crie um projeto e sua primeira build", "Compartilhe e receba feedback" (checklist adaptado ao tipo de conteúdo, sem login), "Evolua build após build" (histórico, próxima build a partir da anterior).
+- Header, footer, seção de exemplo (placeholder de imagem) e seção "Sobre" não foram tocados, como pedido.
+
 ## 2026-06-21 — Login com Google
 
 **O que mudou:**
