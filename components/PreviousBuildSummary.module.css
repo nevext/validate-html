@@ -1,0 +1,20 @@
+.status,.empty{font-size:13px;color:#888}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:240px;
+  overflow-y:auto;
+}
+
+.item{
+  background:#f6f6f5;
+  border:1px solid var(--border-color);
+  border-radius:4px;
+  padding:10px 12px;
+}
+
+.bugs{font-size:13px;color:#993c1d;margin-bottom:4px}
+
+.comment{font-size:13px;color:#444}

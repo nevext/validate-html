@@ -2,6 +2,29 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Modelo de dados: Project → Validations vira Project → Builds → Validations
+
+**Por que essa mudança (e não é só visual):** até aqui, cada projeto tinha um único link/conteúdo e recebia validações direto. Isso não dava pra representar versões: se o dono corrigia algo e queria testar de novo, não tinha como ligar a nova rodada de feedback à anterior, nem mostrar pra quem ia validar o que já tinha mudado. A partir de agora, um **projeto** (`title`, `contentType`, `ownerId`) pode ter várias **builds** — cada build é uma versão concreta, com seu próprio link público (`slug`), conteúdo (`contentUrl`), nota do dono pra quem for testar (`ownerNote`), selo de status manual (`status`) e, opcionalmente, uma referência à build anterior (`previousBuildId`). As validações passam a apontar pra uma build (`buildId`), não mais pro projeto direto.
+
+**O que mudou:**
+- `lib/firestore.ts` reescrito por completo: `ProjectDoc` perdeu `contentUrl`/`slug` (agora vivem em `BuildDoc`); nova coleção `builds`; `ValidationDoc.projectId` virou `ValidationDoc.buildId`, e `designRating`/`uxRating` fixos viraram `ratings: Record<string, number>` (suporta os checklists adaptativos da próxima entrada). Funções novas: `createBuild`, `getBuild`, `getBuildBySlug`, `getBuildsByProject`, `updateBuildStatus`.
+- `lib/checklists.ts` (novo, ver próxima entrada do changelog).
+- `components/CreateProjectForm.tsx`: agora cria o projeto **e a primeira build** numa única tela (nome do projeto, tipo de conteúdo, nome da build, URL) — sem build não há link pra compartilhar, então faz sentido andarem juntos.
+- `components/CreateBuildForm.tsx` + `app/builds/new/page.tsx` (novos): tela pra criar uma build a partir de uma build anterior de um projeto já existente (acessível pelo dashboard). Mostra um seletor de build anterior (padrão: a mais recente), um resumo somente-leitura dos bugs/comentários recebidos nela (`components/PreviousBuildSummary.tsx`) e o campo `ownerNote` pra avisar quem for testar o que já mudou.
+
+**Decisões minhas, além do que foi pedido literalmente:**
+- Adicionei `ownerId` também na `BuildDoc` (não pedido, mas evita precisar de um `get()` cruzado até o projeto só pra checar o dono nas futuras regras de segurança).
+- Perguntas do tipo sim/não (próxima entrada) ficam dentro do mesmo `ratings: Record<string, number>` como `0`/`1`, em vez de uma estrutura separada — um único mapa numérico é mais simples de agregar no dashboard.
+- Nenhuma query usa `orderBy` — ordeno os arrays já carregados em JS. `where + orderBy` em campos diferentes exige um índice composto que eu não tenho como criar daqui sem acesso ao console/CLI do Firebase autenticado; ordenar em memória evita esse risco de quebra em produção.
+- Não migrei os documentos de teste do formato antigo que já estavam no Firestore (da verificação da etapa anterior) — é dado de teste em modo de teste, sem custo deixar órfão.
+
+**Testado contra o Firestore real:** criei um projeto com a build 1, validei publicamente, criei a build 2 a partir da build 1 (vendo o resumo de bugs/comentários da build 1) e escrevi um `ownerNote` — confirmado que ele aparece na página pública da build 2 antes do checklist.
+
+**Aviso de segurança atualizado (regras ainda em modo de teste):**
+- `projects`: leitura aberta; escrita só se `request.auth.uid == ownerId`.
+- `builds`: leitura aberta (a página pública precisa ler sem login); criação/edição só se `request.auth.uid == ownerId` (denormalizado na build, ver decisão acima).
+- `validations`: criação aberta pra qualquer um (anônimas, por design); sem permitir update/delete — devem ser imutáveis.
+
 ## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 4: Firestore em validações, dashboard e limpeza)
 
 **O que mudou:**

@@ -8,8 +8,9 @@ export default function CreateProjectPage() {
       <section className={`${styles.page} container`}>
         <h1 className={styles.title}>Criar projeto</h1>
         <p className={styles.subtitle}>
-          Anexe o conteúdo que deseja validar. Você vai receber um link único pra compartilhar — quem
-          abrir responde um checklist rápido de design, UX e bugs, sem precisar de conta.
+          Isso cria o projeto e a primeira build. Você vai receber um link único pra compartilhar —
+          quem abrir responde um checklist sem precisar de conta. Builds seguintes podem ser criadas
+          depois, direto do dashboard.
         </p>
         <CreateProjectForm />
       </section>

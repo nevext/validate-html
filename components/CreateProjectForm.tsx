@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "./AuthProvider";
 import Button from "./Button";
-import { createProject, type ContentType } from "@/lib/firestore";
+import { createProject, createBuild, type ContentType } from "@/lib/firestore";
 import styles from "./CreateProjectForm.module.css";
 
 const contentTypeOptions: { value: ContentType; label: string; hint: string }[] = [
@@ -17,6 +17,7 @@ export default function CreateProjectForm() {
   const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [contentType, setContentType] = useState<ContentType>("link");
+  const [buildLabel, setBuildLabel] = useState("Build 1");
   const [contentUrl, setContentUrl] = useState("");
   const [generatedSlug, setGeneratedSlug] = useState("");
   const [copied, setCopied] = useState(false);
@@ -26,21 +27,28 @@ export default function CreateProjectForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
-    if (!title.trim() || !contentUrl.trim()) {
-      setError("Preencha o nome do projeto e a URL do conteúdo.");
+    if (!title.trim() || !contentUrl.trim() || !buildLabel.trim()) {
+      setError("Preencha o nome do projeto, o nome da build e a URL do conteúdo.");
       return;
     }
 
     setError("");
     setPending(true);
     try {
-      const slug = await createProject({
+      const projectId = await createProject({
         ownerId: user.uid,
         title: title.trim(),
         contentType,
-        contentUrl: contentUrl.trim(),
       });
-      setGeneratedSlug(slug);
+      const build = await createBuild({
+        projectId,
+        ownerId: user.uid,
+        label: buildLabel.trim(),
+        contentUrl: contentUrl.trim(),
+        ownerNote: "",
+        previousBuildId: null,
+      });
+      setGeneratedSlug(build.slug);
       setCopied(false);
     } catch {
       setError("Não foi possível criar o projeto. Tente novamente.");
@@ -91,6 +99,18 @@ export default function CreateProjectForm() {
           </div>
         </fieldset>
 
+        <label className={styles.fieldLabel} htmlFor="build-label">
+          Nome desta build
+        </label>
+        <input
+          id="build-label"
+          type="text"
+          value={buildLabel}
+          onChange={(e) => setBuildLabel(e.target.value)}
+          placeholder="Build 1"
+          className={styles.input}
+        />
+
         <label className={styles.fieldLabel} htmlFor="project-url">
           {contentTypeOptions.find((o) => o.value === contentType)?.hint}
         </label>
@@ -114,7 +134,8 @@ export default function CreateProjectForm() {
         <div className={styles.resultCard}>
           <h3>Link gerado</h3>
           <p className={styles.resultSummary}>
-            Projeto: {title} · Tipo: {contentTypeOptions.find((o) => o.value === contentType)?.label}
+            Projeto: {title} · {buildLabel} · Tipo:{" "}
+            {contentTypeOptions.find((o) => o.value === contentType)?.label}
           </p>
           <div className={styles.linkRow}>
             <input

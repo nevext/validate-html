@@ -1,0 +1,16 @@
+.page{
+  padding-top:40px;
+  padding-bottom:60px;
+  max-width:640px;
+}
+
+.title{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,44px);
+  letter-spacing:-1px;
+  color:#111;
+  margin-bottom:12px;
+}
+
+.subtitle{color:#555;font-size:15px;line-height:1.6;margin-bottom:32px}
