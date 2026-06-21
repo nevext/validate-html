@@ -6,21 +6,14 @@ import StarRating from "./StarRating";
 import BooleanRating from "./BooleanRating";
 import { checklists } from "@/lib/checklists";
 import { createValidation, type ContentType } from "@/lib/firestore";
-import { formatChecklistAnswers, sendValidationEmail } from "@/lib/email";
 import styles from "./ValidationForm.module.css";
 
 export default function ValidationForm({
   buildId,
   contentType,
-  ownerEmail,
-  projectTitle,
-  buildLabel,
 }: {
   buildId: string;
   contentType: ContentType;
-  ownerEmail: string;
-  projectTitle: string;
-  buildLabel: string;
 }) {
   const questions = checklists[contentType];
   const [ratings, setRatings] = useState<Record<string, number>>({});
@@ -47,17 +40,6 @@ export default function ValidationForm({
     try {
       await createValidation({ buildId, ratings, bugs, comment });
       setSubmitted(true);
-      if (ownerEmail) {
-        void sendValidationEmail({
-          ownerEmail,
-          projectTitle,
-          buildLabel,
-          buildUrl: window.location.href,
-          answers: formatChecklistAnswers(questions, ratings),
-          bugs,
-          comment,
-        });
-      }
     } catch {
       setError("Não foi possível enviar sua validação. Tente novamente.");
     } finally {
@@ -69,7 +51,7 @@ export default function ValidationForm({
     return (
       <div className={styles.successCard}>
         <h3>Validação enviada!</h3>
-        <p>Obrigado pelo seu tempo. Suas respostas já chegaram para o dono do projeto.</p>
+        <p>Obrigado pelo seu tempo. Suas respostas já foram registradas. O dono do projeto vai ver tudo no dashboard.</p>
       </div>
     );
   }

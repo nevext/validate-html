@@ -45,7 +45,7 @@
 .photoRow:hover .photoPreview,
 .photoRow:hover .photoPlaceholder{opacity:.75}
 
-.photoHint{font-size:12px;color:#888;text-decoration:underline}
+.photoHint{font-size:12px;color:#888;font-weight:600}
 
 .photoRow:hover .photoHint{color:#111}
 

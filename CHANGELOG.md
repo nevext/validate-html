@@ -2,6 +2,21 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Remove o envio automático de email, tira sublinhados, ajusta layout do dashboard
+
+**Por que remover o Resend:** testamos de ponta a ponta na entrada anterior e o envio automático funciona — mas só de verdade pro email cadastrado na própria conta Resend (modo sandbox, sem domínio verificado). Como não vamos criar um domínio agora, manter a feature instalada não tinha utilidade prática (só notificaria um endereço fixo, não o dono real de cada projeto). Decidimos remover, e reativamos quando houver um domínio.
+
+**O que mudou:**
+- Removidos: `app/api/send-validation-email/`, `lib/email.ts`, a dependência `resend` (`npm uninstall`), e as variáveis `RESEND_API_KEY` de `.env.local`/`.env.example`.
+- `components/ValidationForm.tsx`: voltou a só gravar a validação no Firestore, sem disparar nada depois — mensagem de sucesso ajustada pra não mencionar email ("O dono do projeto vai ver tudo no dashboard").
+- `app/(marketing)/p/[slug]/page.tsx`: não passa mais `ownerEmail`/`projectTitle`/`buildLabel` pro `ValidationForm` (não são mais usados ali). **O campo `ownerEmail` continua sendo salvo em `ProjectDoc`** (não removi do schema) — fica como dado guardado sem uso agora, caso a notificação por email volte no futuro com um domínio verificado.
+
+**Sublinhados removidos do site inteiro:** a causa raiz era simples — `app/globals.css` nunca resetava o `text-decoration` padrão do navegador nos links (`a{color:inherit}`, sem `text-decoration:none`), então todo `<a>`/botão-como-link ficava sublinhado por padrão. Corrigido isso globalmente, e removidas as declarações `text-decoration:underline` que tinham sido adicionadas depois em `DashboardContent`, `ProfileForm`, `ContentPreview` e nos rodapés de `/login`/`/signup` (trocadas por `font-weight:600` + hover de cor, mantendo a affordance de "isso é clicável" sem a linha embaixo).
+
+**Dashboard: espaço vazio e painel de resumo:** a causa do "espaço gigante à direita" era um `max-width:960px` que eu tinha colocado em `app/(app)/dashboard/page.module.css` durante a etapa de reestruturação das rotas — numa tela grande, isso deixava metade da área de conteúdo (`.content`, ao lado da sidebar) vazia. Aumentei pra `1320px` e `components/DashboardContent.tsx` agora usa esse espaço com um painel de **"Resumo"** fixo à direita (`position:sticky`) mostrando: total de validações recebidas, builds pendentes e builds aprovadas — somados de todos os projetos. **Sobre "issues pendentes/resolvidas":** o app não tem um sistema de issues granular (cada bug é só texto livre dentro de uma validação, sem estado de resolvido/pendente próprio) — então mapeei pro que já existe: uma build com selo verde ("Aprovado") conta como resolvida, qualquer outro status (cinza/amarelo/vermelho/azul) conta como pendente. Em telas ≤900px o painel empilha embaixo da lista de projetos.
+
+**Testado:** build/lint limpos; fluxo completo de validação pública continua funcionando sem nenhuma referência a email; dashboard em 1920px usa a largura toda com o painel de resumo calculando os números certos; confirmado responsivo em mobile.
+
 ## 2026-06-21 — Email automático pro dono via Resend (substitui o mailto)
 
 **O que mudou:**

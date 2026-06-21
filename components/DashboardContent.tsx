@@ -148,7 +148,13 @@ export default function DashboardContent() {
     );
   }
 
+  const allBuilds = data.flatMap((p) => p.builds);
+  const totalValidations = allBuilds.reduce((sum, b) => sum + b.validations.length, 0);
+  const resolvedBuilds = allBuilds.filter((b) => b.build.status === "green").length;
+  const pendingBuilds = allBuilds.length - resolvedBuilds;
+
   return (
+    <div className={styles.dashboardLayout}>
     <div className={styles.projectsGrid}>
       {data.map(({ project, builds }) => (
         <div key={project.id} className={styles.projectCard}>
@@ -211,6 +217,23 @@ export default function DashboardContent() {
           )}
         </div>
       ))}
+    </div>
+
+      <aside className={styles.summaryPanel}>
+        <h2 className={styles.summaryTitle}>Resumo</h2>
+        <div className={styles.summaryStat}>
+          <span className={styles.summaryValue}>{totalValidations}</span>
+          <span className={styles.summaryLabel}>validações recebidas</span>
+        </div>
+        <div className={styles.summaryStat}>
+          <span className={styles.summaryValue}>{pendingBuilds}</span>
+          <span className={styles.summaryLabel}>builds pendentes</span>
+        </div>
+        <div className={styles.summaryStat}>
+          <span className={styles.summaryValue}>{resolvedBuilds}</span>
+          <span className={styles.summaryLabel}>builds aprovadas</span>
+        </div>
+      </aside>
     </div>
   );
 }

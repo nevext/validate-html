@@ -67,13 +67,7 @@ export default function ValidationPage() {
 
       <ContentPreview contentType={project.contentType} contentUrl={build.contentUrl} name={project.title} />
 
-      <ValidationForm
-        buildId={build.id}
-        contentType={project.contentType}
-        ownerEmail={project.ownerEmail}
-        projectTitle={project.title}
-        buildLabel={build.label}
-      />
+      <ValidationForm buildId={build.id} contentType={project.contentType} />
     </section>
   );
 }

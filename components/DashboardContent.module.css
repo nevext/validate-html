@@ -9,9 +9,38 @@
   color:#555;
 }
 
-.emptyLink{display:inline-block;margin-top:12px;color:#111;text-decoration:underline}
+.emptyLink{display:inline-block;margin-top:12px;color:#111;font-weight:600}
 
-.projectsGrid{display:flex;flex-direction:column;gap:24px}
+.dashboardLayout{display:flex;gap:24px;align-items:flex-start}
+
+.projectsGrid{flex:1;min-width:0;display:flex;flex-direction:column;gap:24px}
+
+.summaryPanel{
+  width:260px;
+  flex-shrink:0;
+  background:#fff;
+  border:1px solid var(--border-color);
+  border-radius:6px;
+  padding:24px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  position:sticky;
+  top:24px;
+}
+
+.summaryTitle{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:16px;
+  color:#111;
+  margin-bottom:20px;
+}
+
+.summaryStat{display:flex;flex-direction:column;margin-bottom:20px}
+.summaryStat:last-child{margin-bottom:0}
+
+.summaryValue{font-family:var(--font-kazer-fluro), sans-serif;font-size:32px;font-weight:700;color:#111}
+
+.summaryLabel{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.5px}
 
 .projectCard{
   background:#fff;
@@ -32,9 +61,11 @@
 
 .projectName{font-family:var(--font-kazer-fluro), sans-serif;font-size:20px;color:#111}
 
-.projectLink{font-size:13px;color:#111;text-decoration:underline}
+.projectLink{font-size:13px;color:#111;font-weight:600}
+.projectLink:hover{color:var(--accent)}
 
-.newBuildLink{font-size:13px;color:#111;text-decoration:underline}
+.newBuildLink{font-size:13px;color:#111;font-weight:600}
+.newBuildLink:hover{color:var(--accent)}
 
 .noResponses{color:#888;font-size:14px}
 
@@ -80,12 +111,14 @@
   background:none;
   border:none;
   color:#111;
-  text-decoration:underline;
+  font-weight:600;
   cursor:pointer;
   font-size:12px;
   font-family:var(--font-poppins), sans-serif;
   padding:0;
 }
+
+.historyToggle:hover{color:var(--accent)}
 
 .historyList{
   margin-top:12px;
@@ -112,6 +145,11 @@
 .historyBugs{font-size:13px;color:#993c1d;margin-top:4px}
 
 .historyComment{font-size:13px;color:#444;margin-top:4px}
+
+@media (max-width:900px){
+  .dashboardLayout{flex-direction:column}
+  .summaryPanel{width:100%;position:static}
+}
 
 @media (max-width:600px){
   .buildMeta{flex-direction:column;align-items:flex-start;gap:6px}
