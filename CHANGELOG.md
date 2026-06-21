@@ -2,6 +2,17 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 1: config)
+
+**O que mudou:**
+- Instalado o SDK client do `firebase` (Auth + Firestore). Nenhuma outra dependência nova.
+- `lib/firebase.ts`: inicializa o app do Firebase (idempotente via `getApps()`) e exporta `auth`/`db`. Sem `getAnalytics` — não vamos usar Analytics nesta fase.
+- Config movida para variáveis de ambiente `NEXT_PUBLIC_FIREBASE_*` em `.env.local` (não commitado — já cobertas pelo `.env*` do `.gitignore`); `.env.example` atualizado com os nomes das variáveis.
+
+**Por quê:** decisão do usuário de substituir o plano anterior (Auth.js/Prisma/Supabase) por Firebase Authentication + Cloud Firestore, tanto para login/cadastro de quem cria projetos quanto para persistir projetos e validações de verdade. Esta primeira etapa só prepara a configuração; a troca efetiva da autenticação e dos dados vem nas próximas entradas.
+
+**Aviso de segurança (pendência):** as regras do Firestore continuam em modo de teste (leitura/escrita aberta para qualquer um), como configurado no console. Antes de qualquer uso público real, precisamos voltar e escrever regras adequadas — por exemplo: só o dono (`ownerId`) pode editar/excluir seu próprio projeto; qualquer pessoa pode criar uma validação (são anônimas, por design), mas ninguém deve poder editar ou apagar validações de outros.
+
 ## 2026-06-21 — Novo layout da home (hero, como funciona, exemplo, sobre)
 
 **O que mudou:**
