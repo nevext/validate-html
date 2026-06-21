@@ -50,7 +50,9 @@
 
 .linkGroup a:hover{color:#555}
 
-.buttonGroup{display:flex;gap:8px}
+.userName{color:#888;font-weight:400;text-transform:none}
+
+.buttonGroup{display:flex;gap:8px;align-items:center}
 
 @media (max-width:900px){
   .linkGroup{gap:18px;font-size:12px}

@@ -2,6 +2,21 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Login e cadastro com Auth.js (Credentials)
+
+**O que mudou:**
+- `auth.ts`: configuração do Auth.js v5 (`next-auth@beta`) com Credentials provider — `authorize()` busca o usuário no Prisma e compara a senha com `bcrypt.compare`; sessão em estratégia JWT (sem `@auth/prisma-adapter`, que só seria necessário para provedores OAuth).
+- `app/api/auth/[...nextauth]/route.ts`: rota de API que expõe os handlers do Auth.js.
+- `lib/actions/auth.ts`: server actions `login` e `signUp` (cadastro cria o usuário com senha em hash via `bcryptjs` e já autentica automaticamente).
+- `lib/auth-helpers.ts`: `requireUser()`, pronta para proteger páginas (usada na próxima etapa).
+- `app/login/page.tsx` e `app/signup/page.tsx`: formulários client-side com `useActionState`, mensagens de erro inline.
+- `components/SignOutButton.tsx`: usa `signOut` de `next-auth/react` (redirect "hard", via `window.location`) em vez de uma server action com `redirectTo` — uma server action redirecionando para a própria página em que o usuário já está não força o React a descartar a árvore renderizada (o header continuava mostrando o usuário antigo até uma navegação real); o hard redirect evita esse problema de cache do lado do cliente.
+- `components/Header.tsx`: agora é async e chama `auth()` — mostra "Entrar"/"Cadastrar" deslogado, nome do usuário + "Sair" logado.
+- `app/layout.tsx`: `export const dynamic = "force-dynamic"` para garantir que o layout (e o estado de sessão no header) nunca fique em cache entre navegações.
+- Dependência nova: `next-auth@beta` (Auth.js v5, compatível com App Router/Server Actions).
+
+**Por quê:** implementar o cadastro/login real pedido pelo usuário, mantendo só o necessário (sem adapter, sem middleware Edge) para o escopo deste protótipo. `/create` e `/dashboard` ainda não exigem login nesta etapa — isso vem a seguir.
+
 ## 2026-06-21 — Prisma + SQLite para contas de usuário
 
 **O que mudou:**
