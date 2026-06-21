@@ -14,21 +14,21 @@ export default function Header() {
       <div className={`${styles.headerCard} container`}>
         <div className={styles.brandSmall}>
           <Link href="/" className={styles.brandLink}>
-            <span className={styles.brandText}>BEM VINDO AO VALIDATE</span>
+            <span className={styles.brandText}>VALIDATE</span>
           </Link>
         </div>
         <nav className={styles.linkGroup}>
-          <a href="https://github.com/nevext" target="_blank" rel="noopener">
-            github
-          </a>
-          <Link href="/dashboard">dashboard</Link>
-          {user && <span className={styles.userName}>{user.displayName}</span>}
+          <Link href="/#sobre">sobre</Link>
+          <Link href="/privacidade">política de privacidade</Link>
         </nav>
         <div className={styles.buttonGroup}>
           {!loading &&
             (user ? (
               <>
-                <Button href="/create">Criar projeto</Button>
+                <Link href="/profile" className={styles.userName}>
+                  {user.displayName || "minha conta"}
+                </Link>
+                <Button href="/projects">Projetos</Button>
                 <SignOutButton />
               </>
             ) : (

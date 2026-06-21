@@ -3,7 +3,7 @@ import styles from "./About.module.css";
 
 export default function About() {
   return (
-    <section className={styles.section}>
+    <section id="sobre" className={styles.section}>
       <div className="container">
         <RevealOnScroll className={styles.content}>
           <h2 className={styles.title}>Sobre o Validate</h2>

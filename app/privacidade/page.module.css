@@ -1,0 +1,36 @@
+.page{
+  padding-top:40px;
+  padding-bottom:64px;
+  max-width:680px;
+}
+
+.title{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,44px);
+  letter-spacing:-1px;
+  color:#111;
+  margin-bottom:8px;
+}
+
+.updatedAt{font-size:13px;color:#888;margin-bottom:32px}
+
+.section{margin-bottom:28px}
+
+.sectionTitle{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:18px;
+  color:#111;
+  margin-bottom:10px;
+}
+
+.paragraph{
+  font-family:var(--font-poppins), sans-serif;
+  font-size:15px;
+  line-height:1.7;
+  color:#555;
+  margin-bottom:10px;
+}
+
+.paragraph ul{margin:8px 0 8px 20px}

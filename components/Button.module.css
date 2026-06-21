@@ -13,14 +13,18 @@
   font-size:14px;
   text-align:center;
   box-shadow:0 6px 14px rgba(2,6,23,0.12);
-  transition:transform .1s ease;
+  transition:transform .1s ease, background-color .2s ease, opacity .2s ease;
 }
+
+.btn:hover{background:#333}
 
 .btn:active{transform:translateY(1px)}
 
 .btn:disabled{opacity:.6;cursor:not-allowed}
 
 .secondary{background:#555}
+
+.secondary:hover{background:#6b6b6b}
 
 .fullWidth{width:100%}
 

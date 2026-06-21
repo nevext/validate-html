@@ -2,6 +2,17 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Header novo: marca, navegação e estado logado
+
+**O que mudou:**
+- `components/Header.tsx`: marca virou só `VALIDATE` (antes "BEM VINDO AO VALIDATE"); os links de navegação `github`/`dashboard` foram trocados por `Sobre` (ancora `/#sobre`, reaproveitando a seção que já existe na home) e `Política de Privacidade` (`/privacidade`, novo). O link do GitHub continua no footer.
+- Deslogado, os botões continuam Entrar/Cadastrar. Logado, o nome do usuário virou um link clicável pro perfil (`/profile` — chega na próxima entrada) e o botão "Criar projeto" virou "Projetos" (`/projects` — também chega na próxima entrada; por ora aponta pra uma rota que ainda não existe).
+- `components/Button.module.css`: adicionado `:hover` (antes só existia `:active`); `.userName` no header também ganhou hover.
+- `components/About.tsx`: seção ganhou `id="sobre"` + `scroll-margin-top` pra não ficar atrás do header fixo quando se navega direto pra `/#sobre`.
+- `app/privacidade/page.tsx` (novo): **texto inicial de Política de Privacidade — é rascunho, preciso que você revise** antes de considerar definitivo (cobre dados coletados, uso, Firebase como infraestrutura, direitos do usuário, contato).
+
+**Pendência visível nesta etapa:** os botões "Projetos" e o link do nome apontam pra `/projects` e `/profile`, que ainda não existem — ficam 404 até a próxima entrada (rotas + shell da área logada) e a seguinte (perfil).
+
 ## 2026-06-21 — Copy da home atualizada pro conceito de builds
 
 **O que mudou:**

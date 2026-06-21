@@ -50,7 +50,17 @@
 
 .linkGroup a:hover{color:#555}
 
-.userName{color:#888;font-weight:400;text-transform:none}
+.userName{
+  color:#444;
+  font-weight:600;
+  font-family:var(--font-kazer-fluro);
+  text-transform:none;
+  text-decoration:none;
+  font-size:13px;
+  transition:color .2s ease;
+}
+
+.userName:hover{color:var(--accent)}
 
 .buttonGroup{display:flex;gap:8px;align-items:center}
 
