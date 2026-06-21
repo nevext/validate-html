@@ -2,6 +2,19 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Novo layout da home (hero, como funciona, exemplo, sobre)
+
+**O que mudou:**
+- `components/Hero.tsx`: nova mensagem principal ("Pare de perguntar 'vê aí se tá bom' / Valida aí.") com card de demonstração ao lado (link em fonte monoespaçada, avaliação por estrelas de Design/UX, contagem de bugs e um comentário de exemplo), baseado no protótipo HTML aprovado.
+- `components/HowItWorks.tsx`: nova seção "Como funciona" com os 3 passos (Suba o link / Compartilhe / Veja o resultado).
+- `components/MediaShowcase.tsx`: seção de exemplo do produto em ação. Recebe uma prop opcional `media: { type: "image" | "video", src, alt }` — sem ela, mostra um placeholder; já preparado para receber um vídeo no futuro sem mudar a estrutura.
+- `components/About.tsx`: seção "Sobre o Validate" com texto explicando o que é e por que existe. **Texto é um rascunho inicial — pendente de revisão.**
+- `app/globals.css`: novo token `--accent: #d85a30`, usado com moderação (destaque "Valida aí" e contagem de bugs no card de demonstração).
+- A seção de lead cards (Glossário/Bem-vindo CIESA) saiu da home, já que não faz parte da nova estrutura pedida; o componente (`LeadCardsSection`) continua no projeto, sem uso por enquanto, caso seja reaproveitado em outra página.
+- `app/page.tsx` atualizado para a nova ordem: Header (inalterado) → Hero → Como funciona → Exemplo → Sobre → Footer (inalterado).
+
+**Por quê:** redesenho de conteúdo/mensagem da home a partir de um protótipo visual aprovado, com foco em comunicar a proposta de valor (checklist real de design/UX/bugs, link compartilhável sem login) de forma mais direta que a versão anterior.
+
 ## 2026-06-21 — Exigir login para criar projeto e ver dashboard
 
 **O que mudou:**

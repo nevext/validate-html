@@ -5,6 +5,7 @@ html,body{height:100%;overflow-x:hidden}
   --background:#f6f6f5;
   --foreground:#111;
   --border-color:#e0dfdd;
+  --accent:#d85a30;
   --card-offset:400px;
   --hero-offset:0px;
 }

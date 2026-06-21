@@ -1,11 +1,15 @@
-import HeroSection from "@/components/HeroSection";
-import LeadCardsSection from "@/components/LeadCardsSection";
+import Hero from "@/components/Hero";
+import HowItWorks from "@/components/HowItWorks";
+import MediaShowcase from "@/components/MediaShowcase";
+import About from "@/components/About";
 
 export default function Home() {
   return (
     <>
-      <HeroSection />
-      <LeadCardsSection />
+      <Hero />
+      <HowItWorks />
+      <MediaShowcase />
+      <About />
     </>
   );
 }

@@ -1,0 +1,87 @@
+.hero{padding:56px 0}
+
+.grid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:40px;
+  align-items:center;
+}
+
+.copy{max-width:480px}
+
+.title{margin:0 0 16px;display:flex;flex-direction:column}
+
+.titleLine{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(26px,4vw,40px);
+  line-height:1.15;
+  letter-spacing:-0.5px;
+  color:var(--foreground);
+}
+
+.titleLine q{font-style:italic}
+
+.titleAccent{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(38px,6vw,64px);
+  line-height:1.05;
+  letter-spacing:-1px;
+  color:var(--accent);
+  margin-top:4px;
+}
+
+.description{
+  font-family:var(--font-poppins), sans-serif;
+  font-size:15px;
+  color:#555;
+  line-height:1.6;
+  margin-bottom:24px;
+  max-width:380px;
+}
+
+.demoCard{
+  background:#fff;
+  border:1px solid var(--border-color);
+  padding:20px;
+  border-radius:6px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.demoLink{
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size:13px;
+  color:#888;
+  margin-bottom:14px;
+}
+
+.demoRow{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  color:var(--foreground);
+  margin-bottom:8px;
+}
+
+.demoBugs{color:var(--accent);font-weight:600}
+
+.demoComment{
+  font-size:12px;
+  color:#888;
+  border-top:1px solid var(--border-color);
+  padding-top:10px;
+  margin-top:4px;
+  font-style:italic;
+}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr;gap:32px}
+  .copy{max-width:none}
+}
+
+@media (max-width:600px){
+  .hero{padding:32px 0}
+  .titleLine{font-size:clamp(22px,7vw,30px)}
+  .titleAccent{font-size:clamp(32px,11vw,48px)}
+}

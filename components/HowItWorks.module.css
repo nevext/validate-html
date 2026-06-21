@@ -1,0 +1,32 @@
+.section{padding:48px 0;background:var(--background)}
+
+.title{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(20px,3vw,28px);
+  letter-spacing:-0.5px;
+  color:var(--foreground);
+  margin-bottom:24px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:20px;
+}
+
+.step{border-top:2px solid var(--foreground);padding-top:12px}
+
+.stepTitle{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:600;
+  font-size:14px;
+  color:var(--foreground);
+  margin-bottom:4px;
+}
+
+.stepDescription{font-size:13px;color:#888}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr;gap:16px}
+}
