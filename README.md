@@ -1,34 +1,34 @@
 # Validate
 
-`Validate` é uma pequena plataforma web para permitir que colegas validem rapidamente sites uns dos outros e criem links compartilháveis com parâmetros predefinidos. O sistema foi desenvolvido para a Github Week e serve como ferramenta de colaboração e feedback.
+Plataforma onde um usuário cria um projeto, gera um link único (`/p/[id]`) e compartilha com outras pessoas para que testem e validem seu site, app, vídeo, documento ou executável — respondendo um checklist de avaliação (design, UX, bugs) e deixando comentários. O dono do projeto vê os resultados num dashboard.
 
-## Funcionalidades
+Migrado de um protótipo estático em HTML/CSS/JS (preservado em [`legacy-static/`](./legacy-static)) para Next.js (App Router + TypeScript).
 
-- **Validação de sites**: cole o link de um site, veja prévia e envie um feedback completo incluindo título, email de contato, status (aprovado/reprovado), issues, solicitações de feature, tasks e detalhes de design system.
-- **Geração de link Validate**: crie links com parâmetros (site, nome, email, tópico, opções de feedback) que outros usuários podem usar para abrir o formulário já configurado.
-- **Ajude-me**: guia com explicações formais de como validar um site ou gerar link.
-- **Termos de Uso**: documento acessível via rodapé, explicando responsabilidades antes de enviar ou gerar validações.
-- **Header fixo** com animações e botões de navegação.
-- **Modais centrados** para todos os fluxos (validar, link, ajuda, semana, feedback, rating, etc.).
-- **Relógio em tempo real** no formulário de geração de link.
-- **Responsivo** para telas menores.
+## Stack
 
-## Estrutura de arquivos
+- **Next.js 16** (App Router, TypeScript)
+- **CSS Modules** para estilo (identidade visual original portada 1:1: fundo claro, tipografia bold extrema KazerFluro + Poppins, estilo editorial preto/branco)
+- **Dados de projeto/checklist/respostas:** mockados em memória (`lib/mock-data.ts`) — ainda sem banco de dados real nesta fase
+- **Contas de usuário:** Auth.js (NextAuth) + Prisma/SQLite — só quem cria projetos precisa de conta; quem responde o checklist em `/p/[id]` não precisa de login
 
-- `index.html`: página principal com todos os modais e estrutura do site.
-- `style.css`: estilos para layout, animações e modais.
-- `script.js`: lógica de interatividade, manipulação de modais e geração de URLs.
-- `media/`: imagens, fontes e outros recursos estáticos.
+## Estrutura
 
-## Uso
+```
+app/            rotas (App Router): home, /create, /p/[id], /dashboard, /login, /signup
+components/     componentes React + seus CSS Modules
+lib/            dados mockados, cliente Prisma, helpers de autenticação
+prisma/         schema do banco (SQLite)
+public/         imagens e ícones estáticos
+legacy-static/  versão original em HTML/CSS/JS, preservada como referência
+```
 
-1. Abra via link disponível no github.
-2. Use os botões no cabeçalho para validar um site ou gerar um link.
-3. Preencha os formulários e siga as instruções apresentadas nos modais.
-4. Para validar usando links pré-configurados, clique nos cartões da página inicial; eles abrirão em nova aba com parâmetros na query string.
+## Rodando localmente
 
-## Considerações de desenvolvimento
+```bash
+npm install
+npm run dev
+```
 
-- O código é escrito em HTML, CSS e JavaScript puro (sem frameworks).
-- Projeto voltado a propósitos educacionais e prototipagem rápida.
-- Não há backend; todos os envios usam `mailto:` para enviar emails.
+Abra [http://localhost:3000](http://localhost:3000).
+
+Veja o [CHANGELOG.md](./CHANGELOG.md) para o histórico de mudanças.

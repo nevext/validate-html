@@ -1,0 +1,27 @@
+.page{
+  padding-top:40px;
+  padding-bottom:60px;
+  max-width:760px;
+}
+
+.intro{margin-bottom:24px}
+
+.kicker{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-size:12px;
+  color:#888;
+  margin-bottom:8px;
+}
+
+.title{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,48px);
+  letter-spacing:-1px;
+  color:#111;
+  margin-bottom:12px;
+}
+
+.description{color:#555;font-size:15px;line-height:1.6}

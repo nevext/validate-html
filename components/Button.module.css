@@ -1,0 +1,29 @@
+.btn{
+  display:inline-block;
+  font-family:var(--font-kazer-fluro);
+  font-weight:700;
+  background:#111;
+  color:#fff;
+  border:none;
+  padding:12px 20px;
+  border-radius:4px;
+  cursor:pointer;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-size:14px;
+  text-align:center;
+  box-shadow:0 6px 14px rgba(2,6,23,0.12);
+  transition:transform .1s ease;
+}
+
+.btn:active{transform:translateY(1px)}
+
+.btn:disabled{opacity:.6;cursor:not-allowed}
+
+.secondary{background:#555}
+
+.fullWidth{width:100%}
+
+@media (max-width:600px){
+  .btn{width:100%}
+}

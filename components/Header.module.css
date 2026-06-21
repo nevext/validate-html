@@ -1,0 +1,65 @@
+.siteHeader{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:10000;
+  background:#fff;
+  border-bottom:1px solid var(--border-color);
+}
+
+.headerCard{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+}
+
+.brandSmall{display:flex;align-items:center;gap:12px;color:#222}
+
+.brandLink{text-decoration:none;color:inherit}
+
+.brandText{
+  font-family:var(--font-kazer-fluro);
+  font-weight:700;
+  letter-spacing:1px;
+  font-size:13px;
+  color:#222;
+}
+
+.linkGroup{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:28px;
+  flex:1;
+  margin-left:auto;
+  font-family:var(--font-kazer-fluro);
+  font-weight:600;
+  text-transform:uppercase;
+  font-size:13px;
+}
+
+.linkGroup a{
+  color:#222;
+  text-decoration:none;
+  font-family:var(--font-kazer-fluro);
+  font-weight:600;
+  text-transform:uppercase;
+  font-size:13px;
+  transition:color .2s ease;
+}
+
+.linkGroup a:hover{color:#555}
+
+.buttonGroup{display:flex;gap:8px}
+
+@media (max-width:900px){
+  .linkGroup{gap:18px;font-size:12px}
+}
+
+@media (max-width:600px){
+  .headerCard{flex-direction:column;align-items:center;row-gap:8px;padding:12px}
+  .brandSmall{margin-bottom:4px}
+  .linkGroup{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:0;width:100%}
+  .linkGroup a{font-size:11px}
+  .buttonGroup{flex-direction:column;gap:8px;width:100%;margin-top:4px}
+}

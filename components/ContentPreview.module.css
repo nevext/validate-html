@@ -1,0 +1,53 @@
+.previewCard{
+  width:100%;
+  background:#fff;
+  border:1px solid var(--border-color);
+  padding:20px;
+  border-radius:6px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  margin-bottom:24px;
+}
+
+.previewLabel{
+  font-family:var(--font-kazer-fluro), sans-serif;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  font-size:12px;
+  color:#666;
+  margin-bottom:12px;
+}
+
+.embedBox{
+  width:100%;
+  height:60vh;
+  min-height:320px;
+  border:1px solid #ccc;
+  border-radius:4px;
+  overflow:hidden;
+  background:#f0f0f0;
+}
+
+.iframe,.video{width:100%;height:100%;border:0;display:block}
+
+.fallbackLink{display:inline-block;margin-top:10px;font-size:14px;color:#111;text-decoration:underline}
+
+.placeholder{
+  padding:48px 20px;
+  text-align:center;
+  border:1px dashed #ccc;
+  border-radius:4px;
+  color:#555;
+}
+
+.placeholderHint{font-size:13px;color:#888;margin-top:8px}
+
+.downloadBox{
+  padding:32px 20px;
+  text-align:center;
+  border:1px dashed #ccc;
+  border-radius:4px;
+  color:#444;
+}
+
+.downloadBox p{margin-bottom:16px}
