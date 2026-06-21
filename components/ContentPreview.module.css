@@ -32,16 +32,6 @@
 
 .fallbackLink{display:inline-block;margin-top:10px;font-size:14px;color:#111;text-decoration:underline}
 
-.placeholder{
-  padding:48px 20px;
-  text-align:center;
-  border:1px dashed #ccc;
-  border-radius:4px;
-  color:#555;
-}
-
-.placeholderHint{font-size:13px;color:#888;margin-top:8px}
-
 .downloadBox{
   padding:32px 20px;
   text-align:center;

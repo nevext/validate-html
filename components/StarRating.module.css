@@ -1,0 +1,14 @@
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.label{font-size:14px;color:#222}
+
+.stars{display:flex;gap:4px;font-size:24px;cursor:pointer}
+
+.star{color:#ccc;transition:color .15s ease}
+
+.star.selected{color:#d4a017}

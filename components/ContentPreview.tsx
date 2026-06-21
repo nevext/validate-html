@@ -1,12 +1,12 @@
 import Button from "./Button";
-import type { ContentType } from "@/lib/mock-data";
+import type { ContentType } from "@/lib/firestore";
 import styles from "./ContentPreview.module.css";
 
 const typeLabels: Record<ContentType, string> = {
-  site: "Site",
+  link: "Site",
   video: "Vídeo",
   document: "Documento",
-  executable: "Arquivo para download",
+  file: "Arquivo para download",
 };
 
 export default function ContentPreview({
@@ -22,7 +22,7 @@ export default function ContentPreview({
     <div className={styles.previewCard}>
       <div className={styles.previewLabel}>{typeLabels[contentType]}</div>
 
-      {contentType === "site" && contentUrl && (
+      {contentType === "link" && contentUrl && (
         <>
           <div className={styles.embedBox}>
             <iframe
@@ -50,19 +50,9 @@ export default function ContentPreview({
         </div>
       )}
 
-      {(contentType === "video" || contentType === "document") && !contentUrl && (
-        <div className={styles.placeholder}>
-          <p>Pré-visualização não disponível neste protótipo.</p>
-          <p className={styles.placeholderHint}>
-            Quando o backend existir, o {typeLabels[contentType].toLowerCase()} enviado aparecerá
-            embutido aqui.
-          </p>
-        </div>
-      )}
-
-      {contentType === "executable" && (
+      {contentType === "file" && (
         <div className={styles.downloadBox}>
-          <p>Este conteúdo é um arquivo executável e precisa ser baixado para ser avaliado.</p>
+          <p>Este conteúdo é um arquivo e precisa ser baixado para ser avaliado.</p>
           <Button href={contentUrl} target="_blank" rel="noopener">
             Baixar arquivo
           </Button>

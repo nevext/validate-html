@@ -59,3 +59,33 @@ export async function getProjectsByOwner(ownerId: string): Promise<ProjectDoc[]>
   const snapshot = await getDocs(query(projectsCollection, where("ownerId", "==", ownerId)));
   return snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }) as ProjectDoc);
 }
+
+export interface ValidationDoc {
+  id: string;
+  projectId: string;
+  designRating: number;
+  uxRating: number;
+  bugs: string;
+  comment: string;
+  createdAt: Timestamp | null;
+}
+
+const validationsCollection = collection(db, "validations");
+
+export async function createValidation(data: {
+  projectId: string;
+  designRating: number;
+  uxRating: number;
+  bugs: string;
+  comment: string;
+}): Promise<void> {
+  await addDoc(validationsCollection, {
+    ...data,
+    createdAt: Timestamp.now(),
+  });
+}
+
+export async function getValidationsByProject(projectId: string): Promise<ValidationDoc[]> {
+  const snapshot = await getDocs(query(validationsCollection, where("projectId", "==", projectId)));
+  return snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }) as ValidationDoc);
+}

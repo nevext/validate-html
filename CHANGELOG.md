@@ -2,6 +2,23 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 4: Firestore em validações, dashboard e limpeza)
+
+**O que mudou:**
+- `lib/firestore.ts`: tipo `ValidationDoc` e as funções `createValidation` (grava em `validations`) e `getValidationsByProject`.
+- `components/StarRating.tsx` (novo): seletor de 1 a 5 estrelas, reaproveitando o visual `.star-rating` que já existia no site estático original (cinza → dourado ao selecionar), agora com `aria-label` em cada estrela.
+- `components/ValidationForm.tsx` (novo, substitui `ChecklistForm.tsx`, removido): nota por estrela para Design e UX, campo de bugs e campo de comentário — sem nome/email, já que validações são anônimas por design. Envia para o Firestore via `createValidation`.
+- `app/p/[id]` renomeado para `app/p/[slug]`: agora é client component (`useParams`), busca o projeto por slug no Firestore (`getProjectBySlug`) e mostra `ContentPreview` + `ValidationForm`. Projeto inexistente mostra o mesmo cartão de "não encontrado" (sem mais depender do `notFound()` do Next, que só funciona em Server Components).
+- `components/ContentPreview.tsx`: atualizado para os tipos reais do Firestore (`link/video/document/file`, antes `site/video/document/executable` do mock).
+- `components/DashboardContent.tsx` (novo): busca os projetos do usuário logado (`getProjectsByOwner`) e as validações de cada um (`getValidationsByProject`); mostra nº de validações, nota média de Design/UX e uma tabela com bugs/comentário/data. Estado vazio com link para `/create` se ainda não há projetos.
+- Removidos: `lib/mock-data.ts`, `components/ChecklistForm.tsx`/`.module.css` — nada mais depende de dados mockados para projetos/validações.
+
+**Testado de ponta a ponta contra o Firestore real (`validate-node-d42b8`):** criei um projeto logado, abri o link público deslogado (embed real do site funcionando no iframe), enviei uma validação anônima (4★ Design, 3★ UX, bugs e comentário) e confirmei que ela apareceu certinha no dashboard do dono, com a data formatada. Link de projeto inexistente mostra o cartão de "não encontrado" corretamente.
+
+**Aviso de segurança (lembrete, agora que a migração para Firebase está completa):** as regras do Firestore continuam em modo de teste — leitura/escrita totalmente abertas para qualquer um, inclusive de fora do app. Antes de qualquer uso público real, precisamos escrever regras adequadas, por exemplo:
+- `projects`: leitura aberta (a página pública precisa ler sem login); escrita (criar/editar/excluir) só permitida se `request.auth.uid == resource.data.ownerId`.
+- `validations`: criação aberta para qualquer um (validações são anônimas, por design), mas sem permitir update/delete por ninguém que não seja o dono do projeto referenciado (ou desabilitar update/delete completamente, já que validações deveriam ser imutáveis).
+
 ## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 3: Firestore em projetos)
 
 **O que mudou:**
