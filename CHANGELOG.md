@@ -2,6 +2,14 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Login com Google
+
+**O que mudou:**
+- `lib/auth-actions.ts`: `loginWithGoogle()` via `signInWithPopup` + `GoogleAuthProvider` (provedor já habilitado no console do Firebase). Fechar o popup sem login não mostra erro nem redireciona — só não faz nada.
+- `components/GoogleSignInButton.tsx` (novo), adicionado em `/login` e `/signup` com um divisor "ou" abaixo do formulário de email/senha. Funciona tanto pra cadastro quanto pra login (o Google cria a conta automaticamente se for a primeira vez).
+
+**Verificação:** confirmei que o botão abre o popup do Firebase corretamente, apontando pro `providerId=google.com` do projeto real (`validate-node-d42b8`) — não dá pra automatizar o login completo com uma conta Google de teste (não tenho credenciais pra isso, e não seria apropriado simular isso), então a parte "logar de verdade com uma conta Google" fica sem teste automatizado de ponta a ponta; o restante (popup abrindo, fluxo de erro/cancelamento) foi verificado.
+
 ## 2026-06-21 — Dashboard mostra builds, status e nota média por build
 
 **O que mudou:**

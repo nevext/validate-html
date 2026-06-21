@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/Button";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
 import { signUp } from "@/lib/auth-actions";
 import styles from "./page.module.css";
 
@@ -79,6 +80,10 @@ export default function SignupPage() {
             {pending ? "Criando conta..." : "Criar conta"}
           </Button>
         </form>
+
+        <div className={styles.divider}>ou</div>
+        <GoogleSignInButton onError={setError} />
+
         <p className={styles.footerText}>
           Já tem conta? <Link href="/login">Entrar</Link>
         </p>

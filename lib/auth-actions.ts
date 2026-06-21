@@ -1,10 +1,14 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
   updateProfile,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "./firebase";
+
+const googleProvider = new GoogleAuthProvider();
 
 function mapAuthError(error: unknown): string {
   if (error instanceof FirebaseError) {
@@ -49,6 +53,18 @@ export async function signUp(
     await updateProfile(credential.user, { displayName: name.trim() });
     return {};
   } catch (error) {
+    return { error: mapAuthError(error) };
+  }
+}
+
+export async function loginWithGoogle(): Promise<{ error?: string; cancelled?: boolean }> {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    return {};
+  } catch (error) {
+    if (error instanceof FirebaseError && error.code === "auth/popup-closed-by-user") {
+      return { cancelled: true };
+    }
     return { error: mapAuthError(error) };
   }
 }
