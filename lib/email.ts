@@ -1,35 +1,47 @@
 import type { ChecklistQuestion } from "./checklists";
 
-export function buildValidationMailto(params: {
+export interface ChecklistAnswerItem {
+  label: string;
+  answer: string;
+}
+
+export function formatChecklistAnswers(
+  questions: ChecklistQuestion[],
+  ratings: Record<string, number>
+): ChecklistAnswerItem[] {
+  return questions.map((question) => {
+    const value = ratings[question.key];
+    const answer = question.type === "boolean" ? (value === 1 ? "Sim" : "Não") : `${value ?? "—"}/5`;
+    return { label: question.label, answer };
+  });
+}
+
+export interface ValidationEmailPayload {
   ownerEmail: string;
   projectTitle: string;
   buildLabel: string;
   buildUrl: string;
-  questions: ChecklistQuestion[];
-  ratings: Record<string, number>;
+  answers: ChecklistAnswerItem[];
   bugs: string;
   comment: string;
-}): string {
-  const subject = `Validate: nova validação em "${params.projectTitle}" (${params.buildLabel})`;
+}
 
-  const answersText = params.questions
-    .map((question) => {
-      const value = params.ratings[question.key];
-      const answer = question.type === "boolean" ? (value === 1 ? "Sim" : "Não") : `${value}/5`;
-      return `${question.label}: ${answer}`;
-    })
-    .join("\n");
+// Disparo "fire-and-forget": uma falha aqui nunca deve impedir o validador de
+// ver a confirmação de que a validação foi salva — o email é um bônus.
+export async function sendValidationEmail(payload: ValidationEmailPayload): Promise<void> {
+  if (!payload.ownerEmail) return;
 
-  const body = [
-    `Link da build: ${params.buildUrl}`,
-    "",
-    "Checklist:",
-    answersText,
-    "",
-    `Bugs encontrados: ${params.bugs.trim() || "Nenhum relatado"}`,
-    "",
-    `Comentário: ${params.comment.trim() || "—"}`,
-  ].join("\n");
-
-  return `mailto:${params.ownerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  try {
+    const response = await fetch("/api/send-validation-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      console.warn("Não foi possível notificar o dono por email:", data?.error ?? response.status);
+    }
+  } catch (error) {
+    console.warn("Não foi possível notificar o dono por email:", error);
+  }
 }

@@ -6,7 +6,7 @@ import StarRating from "./StarRating";
 import BooleanRating from "./BooleanRating";
 import { checklists } from "@/lib/checklists";
 import { createValidation, type ContentType } from "@/lib/firestore";
-import { buildValidationMailto } from "@/lib/email";
+import { formatChecklistAnswers, sendValidationEmail } from "@/lib/email";
 import styles from "./ValidationForm.module.css";
 
 export default function ValidationForm({
@@ -48,13 +48,12 @@ export default function ValidationForm({
       await createValidation({ buildId, ratings, bugs, comment });
       setSubmitted(true);
       if (ownerEmail) {
-        window.location.href = buildValidationMailto({
+        void sendValidationEmail({
           ownerEmail,
           projectTitle,
           buildLabel,
           buildUrl: window.location.href,
-          questions,
-          ratings,
+          answers: formatChecklistAnswers(questions, ratings),
           bugs,
           comment,
         });
@@ -70,11 +69,7 @@ export default function ValidationForm({
     return (
       <div className={styles.successCard}>
         <h3>Validação enviada!</h3>
-        <p>
-          Obrigado pelo seu tempo. Suas respostas já foram salvas, e deve ter aberto seu programa
-          de email com uma mensagem pronta pra confirmar o envio pro dono do projeto — é só clicar
-          em enviar.
-        </p>
+        <p>Obrigado pelo seu tempo. Suas respostas já chegaram para o dono do projeto.</p>
       </div>
     );
   }

@@ -2,6 +2,19 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Email automático pro dono via Resend (substitui o mailto)
+
+**O que mudou:**
+- Instalei `resend` (SDK oficial) — única dependência nova, usada só no servidor.
+- `app/api/send-validation-email/route.ts` (novo): API Route que recebe `ownerEmail`, `projectTitle`, `buildLabel`, `buildUrl`, `answers` (lista de pergunta+resposta do checklist já formatada), `bugs` e `comment`, monta um email HTML simples e chama `resend.emails.send(...)` com `from: "Validate <onboarding@resend.dev>"` (domínio padrão do Resend, sem precisar verificar domínio próprio ainda) e `to: ownerEmail`.
+- `RESEND_API_KEY` em `.env.local`/`.env.example`, **sem** prefixo `NEXT_PUBLIC_` — só a API Route (servidor) lê essa variável; nunca é exposta no client. Você ainda precisa colar a chave real no seu `.env.local` (deixei a linha pronta, vazia).
+- `lib/email.ts` reescrito: `formatChecklistAnswers()` (monta a lista de pergunta+resposta a partir de `lib/checklists.ts` + `ratings`) e `sendValidationEmail()` (faz o `fetch` pra API Route — sem `await` bloqueante no chamador, e qualquer erro de rede/resposta só vira um `console.warn`, nunca uma exceção visível pro validador). Removida a função antiga `buildValidationMailto`.
+- `components/ValidationForm.tsx`: depois que `createValidation` salva no Firestore com sucesso, dispara `sendValidationEmail(...)` automaticamente (`void`, não bloqueia a tela) — não depende mais de o validador ter um cliente de email configurado nem de clicar em "enviar". Mensagem de sucesso voltou a dizer só "suas respostas já chegaram para o dono do projeto" (antes mencionava o passo manual do mailto).
+
+**Por que Resend + API Route em vez da extensão "Trigger Email" do Firebase:** essa extensão (e Cloud Functions em geral) só roda em projetos no plano Blaze (pago, com cobrança por uso), mesmo que o uso real fique nos limites gratuitos — exigiria upgrade de conta sem necessidade real. Resend integrado via uma API Route do próprio Next.js continua 100% dentro do plano gratuito do Firebase (Spark) e do Resend (100 emails/dia gratuitos), sem infraestrutura adicional pra manter.
+
+**Falha no envio não bloqueia o validador:** testei sem a `RESEND_API_KEY` configurada (você ainda vai colar a sua) — a API Route responde com erro claro (500 + mensagem), o `fetch` no client captura isso e só loga um aviso no console, e a validação continua sendo salva e confirmada normalmente pro validador (`"Validação enviada!"`), com a build aparecendo certinha no dashboard do dono. Não consegui testar um envio bem-sucedido de verdade, já que isso depende da sua chave real do Resend.
+
 ## 2026-06-21 — Ajustes de UX: foto de perfil, email pro dono, histórico no dashboard, header
 
 **O que mudou:**
