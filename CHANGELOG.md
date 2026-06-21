@@ -2,6 +2,15 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Exigir login para criar projeto e ver dashboard
+
+**O que mudou:**
+- `app/create/page.tsx` e `app/dashboard/page.tsx` agora chamam `requireUser()` (`lib/auth-helpers.ts`) antes de renderizar — sem sessão, redirecionam para `/login`. Confirmado via curl (307 → `/login` sem cookie) e fluxo completo no navegador (cadastro → acesso liberado → logout → redirecionado de novo).
+- A lógica de formulário de `/create` foi extraída para `components/CreateProjectForm.tsx` (client component), já que a página em si precisa ser um Server Component para poder checar a sessão antes de renderizar; o CSS correspondente foi junto para `CreateProjectForm.module.css`.
+- `/p/[id]` e a home continuam públicas, sem exigir login, como pedido.
+
+**Por quê:** só quem cria projetos precisa de conta — a etapa anterior implementou login/cadastro, mas as páginas ainda estavam abertas; esta etapa fecha o requisito de controle de acesso.
+
 ## 2026-06-21 — Login e cadastro com Auth.js (Credentials)
 
 **O que mudou:**

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireUser } from "@/lib/auth-helpers";
 import { projects, getResponsesByProjectId, getApprovalRate } from "@/lib/mock-data";
 import styles from "./page.module.css";
 
@@ -10,7 +11,9 @@ function formatDate(iso: string) {
   });
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  await requireUser();
+
   return (
     <section className={`${styles.page} container`}>
       <h1 className={styles.title}>Dashboard</h1>
