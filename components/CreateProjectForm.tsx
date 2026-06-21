@@ -37,6 +37,7 @@ export default function CreateProjectForm() {
     try {
       const projectId = await createProject({
         ownerId: user.uid,
+        ownerEmail: user.email ?? "",
         title: title.trim(),
         contentType,
       });

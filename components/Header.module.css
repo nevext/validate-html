@@ -7,13 +7,25 @@
 }
 
 .headerCard{
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
   align-items:center;
-  justify-content:space-between;
+  column-gap:16px;
   padding:12px 0;
 }
 
-.brandSmall{display:flex;align-items:center;gap:12px;color:#222}
+.brandSmall{display:flex;align-items:center;gap:10px;color:#222;justify-self:start}
+
+.ownerLogo{
+  display:flex;
+  align-items:center;
+  opacity:.85;
+  transition:opacity .2s ease, transform .2s ease;
+}
+
+.ownerLogo:hover{opacity:1;transform:scale(1.06)}
+
+.ownerLogo img{border-radius:6px;display:block}
 
 .brandLink{text-decoration:none;color:inherit}
 
@@ -27,11 +39,9 @@
 
 .linkGroup{
   display:flex;
-  justify-content:center;
+  justify-self:center;
   align-items:center;
   gap:28px;
-  flex:1;
-  margin-left:auto;
   font-family:var(--font-kazer-fluro);
   font-weight:600;
   text-transform:uppercase;
@@ -45,10 +55,12 @@
   font-weight:600;
   text-transform:uppercase;
   font-size:13px;
-  transition:color .2s ease;
+  padding-bottom:2px;
+  border-bottom:1px solid transparent;
+  transition:color .2s ease, border-color .2s ease;
 }
 
-.linkGroup a:hover{color:#555}
+.linkGroup a:hover{color:var(--accent);border-color:var(--accent)}
 
 .userName{
   color:#444;
@@ -62,16 +74,67 @@
 
 .userName:hover{color:var(--accent)}
 
-.buttonGroup{display:flex;gap:8px;align-items:center}
+.buttonGroup{display:flex;gap:8px;align-items:center;justify-self:end}
+
+.menuToggle{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  justify-self:end;
+  width:36px;
+  height:36px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:8px;
+}
+
+.menuToggle span{
+  width:100%;
+  height:2px;
+  background:#111;
+  display:block;
+  transition:background-color .2s ease;
+}
+
+.menuToggle:hover span{background:var(--accent)}
+
+.mobileMenu{display:none}
 
 @media (max-width:900px){
   .linkGroup{gap:18px;font-size:12px}
 }
 
 @media (max-width:600px){
-  .headerCard{flex-direction:column;align-items:center;row-gap:8px;padding:12px}
-  .brandSmall{margin-bottom:4px}
-  .linkGroup{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:0;width:100%}
-  .linkGroup a{font-size:11px}
-  .buttonGroup{flex-direction:column;gap:8px;width:100%;margin-top:4px}
+  .headerCard{grid-template-columns:1fr auto}
+
+  .linkGroup,
+  .buttonGroup{display:none}
+
+  .menuToggle{display:flex}
+
+  .mobileMenu{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    padding:16px;
+    border-top:1px solid var(--border-color);
+  }
+
+  .mobileLinkGroup{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    font-family:var(--font-kazer-fluro);
+    font-weight:600;
+    text-transform:uppercase;
+    font-size:13px;
+  }
+
+  .mobileLinkGroup a{color:#222;text-decoration:none}
+  .mobileLinkGroup a:hover{color:var(--accent)}
+
+  .mobileButtonGroup{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+  .mobileButtonGroup .userName{text-align:center;padding:6px 0}
 }

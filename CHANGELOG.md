@@ -2,6 +2,22 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Ajustes de UX: foto de perfil, email pro dono, histórico no dashboard, header
+
+**O que mudou:**
+
+1. **Foto de perfil clicável** (`components/ProfileForm.tsx`): o `<input type="file">` ficou visualmente escondido (`clip:rect(0,0,0,0)`, mantendo acessibilidade) dentro de um `<label>` que envolve o avatar — clicar na foto (ou no texto "Clique na foto para trocar") abre o seletor de arquivo, sem o botão "Choose File" do navegador visível.
+
+2. **Validação avisa o dono por email** (`lib/email.ts`, novo): como o projeto não tem backend, usei o padrão `mailto:` que o site estático original já usava — sem dependência nova, sem serviço externo. `ProjectDoc` ganhou o campo `ownerEmail` (salvo a partir do `user.email` na criação do projeto, em `createProject`). Depois que uma validação é gravada no Firestore, o `ValidationForm` monta um `mailto:` com assunto/corpo (link da build, cada resposta do checklist, bugs, comentário) endereçado ao dono e aciona `window.location.href` — isso abre o programa de email do navegador da pessoa que validou, com a mensagem pronta pra ela só clicar em enviar (exatamente como o `mailto:` do script.js original). Não é 100% automático (a pessoa que valida precisa confirmar o envio no cliente de email dela), mas não exige nenhuma infraestrutura nova.
+
+3. **Histórico de validações no dashboard** (`components/DashboardContent.tsx`): a reescrita pra builds (etapa anterior) tinha deixado só agregados (nº de validações, nota média) — não tinha como ver o que cada pessoa respondeu. Agora cada build tem um botão "N validações ▲/▼" que expande uma lista com cada validação: data, resposta de cada pergunta do checklist (usando `lib/checklists.ts` pra mostrar o label certo, estrela ou sim/não), bugs e comentário.
+
+4. **Header**: logo da Nevext (`media/img/nevext-logo-icon.png` → `public/img/`, recortado com `sharp` — já estava no `node_modules` como dependência do Next, não precisei instalar nada novo — porque o arquivo original tinha bastante espaço em branco ao redor do ícone) no canto superior esquerdo, ao lado de "VALIDATE", linkando pro `github.com/nevext` — a marca de quem é dono da plataforma. `headerCard` virou um grid de 3 colunas (`1fr auto 1fr`) pra "Sobre"/"Política de Privacidade" ficarem centralizados de verdade em relação à página, e não só dentro do espaço que sobrava entre marca e botões (que tinham larguras diferentes). Hover mais visível nesses links (cor de acento + sublinhado). **Menu hambúrguer no mobile**: o header empilhado (marca, nav, nome, botões, tudo visível ao mesmo tempo) ocupava a tela inteira antes de qualquer conteúdo — agora em telas ≤600px aparece só marca + ícone de hambúrguer, e o menu completo (nav + botões/conta) abre num painel ao clicar.
+
+**Pendência:** pra "avaliação vai pro email de quem gerou o link" funcionar de fato (não só abrir o cliente de email), a pessoa que valida precisa ter um cliente de email configurado no dispositivo e precisa clicar em enviar — isso é uma limitação do `mailto:`, não um bug. Se mais pra frente você quiser um envio 100% automático (sem depender do cliente de email de quem valida), aí sim precisaríamos de um serviço como EmailJS/Resend — combinamos que por agora ia de `mailto:`.
+
+**Testado contra o Firebase real:** criei projeto, validei publicamente (o `mailto:` disparou sem navegar a página pra fora do app), conferi o histórico expandido no dashboard com os dados certos, e o logo/centralização/hambúrguer no header em desktop e mobile.
+
 ## 2026-06-21 — Página de perfil: foto, nome, curso, faculdade, trocar senha
 
 **O que mudou:**

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthProvider";
@@ -21,9 +22,20 @@ export default function Sidebar() {
 
   return (
     <aside className={styles.sidebar}>
-      <Link href="/" className={styles.brand}>
-        VALIDATE
-      </Link>
+      <div className={styles.brandRow}>
+        <a
+          href="https://github.com/nevext"
+          target="_blank"
+          rel="noopener"
+          className={styles.ownerLogo}
+          title="Um produto Nevext"
+        >
+          <Image src="/img/nevext-logo-icon.png" alt="Nevext" width={24} height={24} />
+        </a>
+        <Link href="/" className={styles.brand}>
+          VALIDATE
+        </Link>
+      </div>
       {user && <p className={styles.userName}>{user.displayName || user.email}</p>}
       <nav className={styles.nav}>
         {links.map((link) => (

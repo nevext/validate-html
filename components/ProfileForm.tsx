@@ -118,15 +118,22 @@ export default function ProfileForm() {
       <form className={styles.form} onSubmit={handleProfileSubmit}>
         <h2 className={styles.formTitle}>Seus dados</h2>
 
-        <div className={styles.photoRow}>
+        <label className={styles.photoRow} htmlFor="profile-photo-input" title="Clique para trocar a foto">
           {photoPreview ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={photoPreview} alt="Foto de perfil" className={styles.photoPreview} />
           ) : (
             <div className={styles.photoPlaceholder}>{name.charAt(0).toUpperCase() || "?"}</div>
           )}
-          <input type="file" accept="image/*" onChange={handlePhotoChange} className={styles.fileInput} />
-        </div>
+          <span className={styles.photoHint}>Clique na foto para trocar</span>
+          <input
+            id="profile-photo-input"
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            className={styles.fileInput}
+          />
+        </label>
 
         <label className={styles.fieldLabel} htmlFor="profile-name">
           Nome

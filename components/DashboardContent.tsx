@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "./AuthProvider";
 import StatusBadge, { statusLabels } from "./StatusBadge";
+import { checklists } from "@/lib/checklists";
 import {
   getBuildsByProject,
   getProjectsByOwner,
@@ -11,6 +12,7 @@ import {
   updateBuildStatus,
   type BuildDoc,
   type BuildStatus,
+  type ContentType,
   type ProjectDoc,
   type ValidationDoc,
 } from "@/lib/firestore";
@@ -33,16 +35,65 @@ function ratingAverage(validations: ValidationDoc[]): number | null {
 
 function formatDate(timestamp: BuildDoc["createdAt"]) {
   if (!timestamp) return "—";
-  return timestamp.toDate().toLocaleDateString("pt-BR", {
+  return timestamp.toDate().toLocaleString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
+}
+
+function ValidationHistory({
+  validations,
+  contentType,
+}: {
+  validations: ValidationDoc[];
+  contentType: ContentType;
+}) {
+  const questions = checklists[contentType];
+
+  if (validations.length === 0) {
+    return <p className={styles.noResponses}>Nenhuma validação recebida ainda.</p>;
+  }
+
+  return (
+    <div className={styles.historyList}>
+      {validations.map((validation) => (
+        <div key={validation.id} className={styles.historyItem}>
+          <p className={styles.historyDate}>{formatDate(validation.createdAt)}</p>
+          <div className={styles.historyAnswers}>
+            {questions.map((question) => {
+              const value = validation.ratings[question.key];
+              const answer =
+                question.type === "boolean" ? (value === 1 ? "Sim" : "Não") : `${value ?? "—"}/5`;
+              return (
+                <span key={question.key} className={styles.historyAnswer}>
+                  {question.label}: <strong>{answer}</strong>
+                </span>
+              );
+            })}
+          </div>
+          {validation.bugs.trim() && (
+            <p className={styles.historyBugs}>
+              <strong>Bugs:</strong> {validation.bugs}
+            </p>
+          )}
+          {validation.comment.trim() && (
+            <p className={styles.historyComment}>
+              <strong>Comentário:</strong> {validation.comment}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default function DashboardContent() {
   const { user } = useAuth();
   const [data, setData] = useState<ProjectWithBuilds[] | null>(null);
+  const [expandedBuildId, setExpandedBuildId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -114,6 +165,7 @@ export default function DashboardContent() {
             <div className={styles.buildsList}>
               {builds.map(({ build, validations }) => {
                 const avg = ratingAverage(validations);
+                const expanded = expandedBuildId === build.id;
                 return (
                   <div key={build.id} className={styles.buildRow}>
                     <div className={styles.buildHeader}>
@@ -127,7 +179,13 @@ export default function DashboardContent() {
                     </div>
 
                     <div className={styles.buildMeta}>
-                      <span>{validations.length} validações</span>
+                      <button
+                        type="button"
+                        className={styles.historyToggle}
+                        onClick={() => setExpandedBuildId(expanded ? null : build.id)}
+                      >
+                        {validations.length} validações{expanded ? " ▲" : " ▼"}
+                      </button>
                       <span>nota média: {avg ?? "—"}</span>
                       <span>{formatDate(build.createdAt)}</span>
                       <select
@@ -142,6 +200,10 @@ export default function DashboardContent() {
                         ))}
                       </select>
                     </div>
+
+                    {expanded && (
+                      <ValidationHistory validations={validations} contentType={project.contentType} />
+                    )}
                   </div>
                 );
               })}

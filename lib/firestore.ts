@@ -29,6 +29,7 @@ export type BuildStatus = "green" | "yellow" | "red" | "blue" | "gray";
 export interface ProjectDoc {
   id: string;
   ownerId: string;
+  ownerEmail: string;
   title: string;
   contentType: ContentType;
   createdAt: Timestamp | null;
@@ -72,6 +73,7 @@ function sortByCreatedAtDesc<T extends { createdAt: Timestamp | null }>(items: T
 
 export async function createProject(data: {
   ownerId: string;
+  ownerEmail: string;
   title: string;
   contentType: ContentType;
 }): Promise<string> {
