@@ -1,6 +1,6 @@
 # Validate
 
-Plataforma onde um usuário cria um projeto, gera um link único (`/p/[id]`) e compartilha com outras pessoas para que testem e validem seu site, app, vídeo, documento ou executável — respondendo um checklist de avaliação (design, UX, bugs) e deixando comentários. O dono do projeto vê os resultados num dashboard.
+Plataforma onde um usuário cria um projeto, gera um link único (`/p/[slug]`) e compartilha com outras pessoas para que testem e validem seu site, app, vídeo, documento ou executável — respondendo um checklist de avaliação (design, UX, bugs) e deixando comentários. O dono do projeto vê os resultados num dashboard.
 
 Migrado de um protótipo estático em HTML/CSS/JS (preservado em [`legacy-static/`](./legacy-static)) para Next.js (App Router + TypeScript).
 
@@ -8,16 +8,19 @@ Migrado de um protótipo estático em HTML/CSS/JS (preservado em [`legacy-static
 
 - **Next.js 16** (App Router, TypeScript)
 - **CSS Modules** para estilo (identidade visual original portada 1:1: fundo claro, tipografia bold extrema KazerFluro + Poppins, estilo editorial preto/branco)
-- **Dados de projeto/checklist/respostas:** mockados em memória (`lib/mock-data.ts`) — ainda sem banco de dados real nesta fase
-- **Contas de usuário:** Auth.js (NextAuth) + Prisma/SQLite — só quem cria projetos precisa de conta; quem responde o checklist em `/p/[id]` não precisa de login
+- **Firebase Authentication** (email/senha) — só quem cria projetos precisa de conta; quem responde o checklist em `/p/[slug]` não precisa de login
+- **Cloud Firestore** — projetos (`projects`) e validações (`validations`) são dados reais, não mockados
+
+## Configuração
+
+Crie um `.env.local` (veja `.env.example`) com as credenciais do seu projeto Firebase (Configurações do projeto → Geral → apps web). As regras do Firestore ainda estão em modo de teste — **antes de qualquer uso público real, é preciso escrever regras adequadas** (ver aviso no `CHANGELOG.md`).
 
 ## Estrutura
 
 ```
-app/            rotas (App Router): home, /create, /p/[id], /dashboard, /login, /signup
+app/            rotas (App Router): home, /create, /p/[slug], /dashboard, /login, /signup
 components/     componentes React + seus CSS Modules
-lib/            dados mockados, cliente Prisma, helpers de autenticação
-prisma/         schema do banco (SQLite)
+lib/            firebase.ts (config), firestore.ts (projects/validations), auth-actions.ts
 public/         imagens e ícones estáticos
 legacy-static/  versão original em HTML/CSS/JS, preservada como referência
 ```
