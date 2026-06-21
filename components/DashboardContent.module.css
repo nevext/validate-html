@@ -34,32 +34,48 @@
 
 .projectLink{font-size:13px;color:#111;text-decoration:underline}
 
-.metrics{display:flex;gap:24px;margin-bottom:20px}
-
-.metric{display:flex;flex-direction:column}
-
-.metricValue{font-family:var(--font-kazer-fluro), sans-serif;font-size:28px;font-weight:700;color:#111}
-
-.metricLabel{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#888}
-
-.table{width:100%;border-collapse:collapse;font-size:13px}
-
-.table th{
-  text-align:left;
-  padding:8px;
-  border-bottom:1px solid var(--border-color);
-  color:#888;
-  text-transform:uppercase;
-  font-size:11px;
-  letter-spacing:.5px;
-}
-
-.table td{padding:8px;border-bottom:1px solid #f0f0f0;color:#222;vertical-align:top}
-
-.commentCell{max-width:280px}
+.newBuildLink{font-size:13px;color:#111;text-decoration:underline}
 
 .noResponses{color:#888;font-size:14px}
 
+.buildsList{display:flex;flex-direction:column;gap:12px}
+
+.buildRow{
+  border:1px solid var(--border-color);
+  border-radius:4px;
+  padding:12px 14px;
+}
+
+.buildHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.buildHeaderLeft{display:flex;align-items:center;gap:10px}
+
+.buildLabel{font-family:var(--font-kazer-fluro), sans-serif;font-weight:600;font-size:14px;color:#111}
+
+.buildMeta{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+  font-size:12px;
+  color:#888;
+}
+
+.statusSelect{
+  font-size:12px;
+  padding:4px 8px;
+  border:1px solid #ccc;
+  border-radius:4px;
+  font-family:var(--font-poppins), sans-serif;
+}
+
 @media (max-width:600px){
-  .table{display:block;overflow-x:auto;white-space:nowrap}
+  .buildMeta{flex-direction:column;align-items:flex-start;gap:6px}
 }

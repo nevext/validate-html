@@ -2,6 +2,14 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Dashboard mostra builds, status e nota média por build
+
+**O que mudou:**
+- `components/StatusBadge.tsx` (novo): selo colorido pros 5 status (`gray` "Sem avaliação", `green` "Aprovado", `yellow` "Atenção", `red` "Com problemas", `blue` "Em revisão" — rótulos que escolhi eu, já que o pedido definia só as cores/chaves).
+- `components/DashboardContent.tsx` reescrito: agora é projeto → lista de builds (mais recente primeiro), cada uma com label, `StatusBadge`, nº de validações, nota média (média de todos os valores numéricos em `ratings` das validações daquela build — estrela e sim/não entram juntos na mesma média, de forma simples), data de criação, link público e um `<select>` pra trocar o status manualmente (`updateBuildStatus`, grava direto no Firestore). Link "+ nova build" por projeto, levando pra `/builds/new?projectId=...`.
+
+**Testado contra o Firestore real:** dashboard mostrou a build criada antes com 1 validação e nota média 3.2 (média de `[4,5,0,4,3]`, onde o `0` é a resposta "Não" da pergunta booleana); troquei o status manualmente pelo seletor e a mudança refletiu no Firestore.
+
 ## 2026-06-21 — Checklist adaptativo por tipo de conteúdo
 
 **O que mudou:**

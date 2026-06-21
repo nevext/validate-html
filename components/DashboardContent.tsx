@@ -3,25 +3,35 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "./AuthProvider";
+import StatusBadge, { statusLabels } from "./StatusBadge";
 import {
+  getBuildsByProject,
   getProjectsByOwner,
-  getValidationsByProject,
+  getValidationsByBuild,
+  updateBuildStatus,
+  type BuildDoc,
+  type BuildStatus,
   type ProjectDoc,
   type ValidationDoc,
 } from "@/lib/firestore";
 import styles from "./DashboardContent.module.css";
 
-type ProjectWithValidations = {
-  project: ProjectDoc;
-  validations: ValidationDoc[];
-};
+type BuildWithValidations = { build: BuildDoc; validations: ValidationDoc[] };
+type ProjectWithBuilds = { project: ProjectDoc; builds: BuildWithValidations[] };
+
+const ALL_STATUSES: BuildStatus[] = ["gray", "green", "yellow", "red", "blue"];
 
 function average(values: number[]): number | null {
   if (values.length === 0) return null;
   return Math.round((values.reduce((sum, v) => sum + v, 0) / values.length) * 10) / 10;
 }
 
-function formatDate(timestamp: ValidationDoc["createdAt"]) {
+function ratingAverage(validations: ValidationDoc[]): number | null {
+  const allValues = validations.flatMap((v) => Object.values(v.ratings));
+  return average(allValues);
+}
+
+function formatDate(timestamp: BuildDoc["createdAt"]) {
   if (!timestamp) return "—";
   return timestamp.toDate().toLocaleDateString("pt-BR", {
     day: "2-digit",
@@ -32,7 +42,7 @@ function formatDate(timestamp: ValidationDoc["createdAt"]) {
 
 export default function DashboardContent() {
   const { user } = useAuth();
-  const [data, setData] = useState<ProjectWithValidations[] | null>(null);
+  const [data, setData] = useState<ProjectWithBuilds[] | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -40,13 +50,19 @@ export default function DashboardContent() {
 
     async function load() {
       const projects = await getProjectsByOwner(user!.uid);
-      const withValidations = await Promise.all(
-        projects.map(async (project) => ({
-          project,
-          validations: await getValidationsByProject(project.id),
-        }))
+      const withBuilds = await Promise.all(
+        projects.map(async (project) => {
+          const builds = await getBuildsByProject(project.id);
+          const buildsWithValidations = await Promise.all(
+            builds.map(async (build) => ({
+              build,
+              validations: await getValidationsByBuild(build.id),
+            }))
+          );
+          return { project, builds: buildsWithValidations };
+        })
       );
-      if (active) setData(withValidations);
+      if (active) setData(withBuilds);
     }
 
     load();
@@ -54,6 +70,17 @@ export default function DashboardContent() {
       active = false;
     };
   }, [user]);
+
+  async function handleStatusChange(buildId: string, status: BuildStatus) {
+    setData(
+      (prev) =>
+        prev?.map((p) => ({
+          ...p,
+          builds: p.builds.map((b) => (b.build.id === buildId ? { ...b, build: { ...b.build, status } } : b)),
+        })) ?? null
+    );
+    await updateBuildStatus(buildId, status);
+  }
 
   if (!data) {
     return <p className={styles.status}>Carregando...</p>;
@@ -72,63 +99,56 @@ export default function DashboardContent() {
 
   return (
     <div className={styles.projectsGrid}>
-      {data.map(({ project, validations }) => {
-        const designAvg = average(validations.map((v) => v.designRating));
-        const uxAvg = average(validations.map((v) => v.uxRating));
-
-        return (
-          <div key={project.id} className={styles.projectCard}>
-            <div className={styles.projectHeader}>
-              <h2 className={styles.projectName}>{project.title}</h2>
-              <Link href={`/p/${project.slug}`} className={styles.projectLink}>
-                ver link público
-              </Link>
-            </div>
-
-            <div className={styles.metrics}>
-              <div className={styles.metric}>
-                <span className={styles.metricValue}>{validations.length}</span>
-                <span className={styles.metricLabel}>validações</span>
-              </div>
-              <div className={styles.metric}>
-                <span className={styles.metricValue}>{designAvg ?? "—"}</span>
-                <span className={styles.metricLabel}>nota design</span>
-              </div>
-              <div className={styles.metric}>
-                <span className={styles.metricValue}>{uxAvg ?? "—"}</span>
-                <span className={styles.metricLabel}>nota ux</span>
-              </div>
-            </div>
-
-            {validations.length > 0 ? (
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Design</th>
-                    <th>UX</th>
-                    <th>Bugs</th>
-                    <th>Comentário</th>
-                    <th>Data</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {validations.map((validation) => (
-                    <tr key={validation.id}>
-                      <td>{validation.designRating}★</td>
-                      <td>{validation.uxRating}★</td>
-                      <td className={styles.commentCell}>{validation.bugs || "—"}</td>
-                      <td className={styles.commentCell}>{validation.comment || "—"}</td>
-                      <td>{formatDate(validation.createdAt)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className={styles.noResponses}>Nenhuma validação recebida ainda.</p>
-            )}
+      {data.map(({ project, builds }) => (
+        <div key={project.id} className={styles.projectCard}>
+          <div className={styles.projectHeader}>
+            <h2 className={styles.projectName}>{project.title}</h2>
+            <Link href={`/builds/new?projectId=${project.id}`} className={styles.newBuildLink}>
+              + nova build
+            </Link>
           </div>
-        );
-      })}
+
+          {builds.length === 0 ? (
+            <p className={styles.noResponses}>Nenhuma build criada ainda.</p>
+          ) : (
+            <div className={styles.buildsList}>
+              {builds.map(({ build, validations }) => {
+                const avg = ratingAverage(validations);
+                return (
+                  <div key={build.id} className={styles.buildRow}>
+                    <div className={styles.buildHeader}>
+                      <div className={styles.buildHeaderLeft}>
+                        <span className={styles.buildLabel}>{build.label}</span>
+                        <StatusBadge status={build.status} />
+                      </div>
+                      <Link href={`/p/${build.slug}`} className={styles.projectLink}>
+                        ver link público
+                      </Link>
+                    </div>
+
+                    <div className={styles.buildMeta}>
+                      <span>{validations.length} validações</span>
+                      <span>nota média: {avg ?? "—"}</span>
+                      <span>{formatDate(build.createdAt)}</span>
+                      <select
+                        value={build.status}
+                        onChange={(e) => handleStatusChange(build.id, e.target.value as BuildStatus)}
+                        className={styles.statusSelect}
+                      >
+                        {ALL_STATUSES.map((status) => (
+                          <option key={status} value={status}>
+                            {statusLabels[status]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
