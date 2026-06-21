@@ -1,67 +1,57 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "./AuthProvider";
 import Button from "./Button";
-import type { ContentType } from "@/lib/mock-data";
+import { createProject, type ContentType } from "@/lib/firestore";
 import styles from "./CreateProjectForm.module.css";
 
 const contentTypeOptions: { value: ContentType; label: string; hint: string }[] = [
-  { value: "site", label: "Link / Site", hint: "Cole a URL do site ou da página a validar" },
+  { value: "link", label: "Link / Site", hint: "Cole a URL do site ou da página a validar" },
   { value: "video", label: "Vídeo", hint: "Cole a URL do vídeo hospedado (ex: YouTube, Drive)" },
   { value: "document", label: "Documento", hint: "Cole a URL do documento (ex: PDF, Figma, Docs)" },
-  { value: "executable", label: "Arquivo para download (.apk, .exe)", hint: "Anexe o arquivo executável" },
+  { value: "file", label: "Arquivo para download (.apk, .exe)", hint: "Cole o link de download do arquivo" },
 ];
 
-const checklistCategoryOptions = [
-  { value: "design", label: "Design" },
-  { value: "ux", label: "UX" },
-  { value: "bugs", label: "Bugs" },
-] as const;
-
-const DEMO_PROJECT_ID = "abc123";
-
 export default function CreateProjectForm() {
-  const [name, setName] = useState("");
-  const [contentType, setContentType] = useState<ContentType>("site");
+  const { user } = useAuth();
+  const [title, setTitle] = useState("");
+  const [contentType, setContentType] = useState<ContentType>("link");
   const [contentUrl, setContentUrl] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
-    new Set(["design", "ux", "bugs"])
-  );
-  const [customItems, setCustomItems] = useState<string[]>([]);
-  const [customItemDraft, setCustomItemDraft] = useState("");
-  const [generatedLink, setGeneratedLink] = useState("");
+  const [generatedSlug, setGeneratedSlug] = useState("");
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
-  function toggleCategory(value: string) {
-    setSelectedCategories((prev) => {
-      const next = new Set(prev);
-      if (next.has(value)) next.delete(value);
-      else next.add(value);
-      return next;
-    });
-  }
-
-  function addCustomItem() {
-    if (!customItemDraft.trim()) return;
-    setCustomItems((prev) => [...prev, customItemDraft.trim()]);
-    setCustomItemDraft("");
-  }
-
-  function removeCustomItem(index: number) {
-    setCustomItems((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const link = `validate.com/p/${DEMO_PROJECT_ID}`;
-    setGeneratedLink(link);
-    setCopied(false);
+    if (!user) return;
+    if (!title.trim() || !contentUrl.trim()) {
+      setError("Preencha o nome do projeto e a URL do conteúdo.");
+      return;
+    }
+
+    setError("");
+    setPending(true);
+    try {
+      const slug = await createProject({
+        ownerId: user.uid,
+        title: title.trim(),
+        contentType,
+        contentUrl: contentUrl.trim(),
+      });
+      setGeneratedSlug(slug);
+      setCopied(false);
+    } catch {
+      setError("Não foi possível criar o projeto. Tente novamente.");
+    } finally {
+      setPending(false);
+    }
   }
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(`https://${generatedLink}`);
+      await navigator.clipboard.writeText(`https://validate.com/p/${generatedSlug}`);
       setCopied(true);
     } catch {
       setCopied(false);
@@ -71,14 +61,14 @@ export default function CreateProjectForm() {
   return (
     <>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label className={styles.fieldLabel} htmlFor="project-name">
+        <label className={styles.fieldLabel} htmlFor="project-title">
           Nome do projeto
         </label>
         <input
-          id="project-name"
+          id="project-title"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex: App Mobile Beta"
           className={styles.input}
         />
@@ -101,94 +91,43 @@ export default function CreateProjectForm() {
           </div>
         </fieldset>
 
-        {contentType === "executable" ? (
-          <>
-            <label className={styles.fieldLabel} htmlFor="project-file">
-              Arquivo
-            </label>
-            <input
-              id="project-file"
-              type="file"
-              className={styles.input}
-              onChange={(e) => setFileName(e.target.files?.[0]?.name ?? "")}
-            />
-            {fileName && <p className={styles.fileHint}>Selecionado: {fileName}</p>}
-          </>
-        ) : (
-          <>
-            <label className={styles.fieldLabel} htmlFor="project-url">
-              {contentTypeOptions.find((o) => o.value === contentType)?.hint}
-            </label>
-            <input
-              id="project-url"
-              type="text"
-              value={contentUrl}
-              onChange={(e) => setContentUrl(e.target.value)}
-              placeholder="https://..."
-              className={styles.input}
-            />
-          </>
-        )}
+        <label className={styles.fieldLabel} htmlFor="project-url">
+          {contentTypeOptions.find((o) => o.value === contentType)?.hint}
+        </label>
+        <input
+          id="project-url"
+          type="text"
+          value={contentUrl}
+          onChange={(e) => setContentUrl(e.target.value)}
+          placeholder="https://..."
+          className={styles.input}
+        />
 
-        <fieldset className={styles.fieldset}>
-          <legend className={styles.fieldLabel}>Checklist de validação</legend>
-          <div className={styles.checklistOptions}>
-            {checklistCategoryOptions.map((option) => (
-              <label key={option.value} className={styles.checklistOption}>
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.has(option.value)}
-                  onChange={() => toggleCategory(option.value)}
-                />
-                <span>{option.label}</span>
-              </label>
-            ))}
-          </div>
+        {error && <p className={styles.error}>{error}</p>}
 
-          <div className={styles.customItems}>
-            {customItems.map((item, index) => (
-              <div key={index} className={styles.customItem}>
-                <span>{item}</span>
-                <button type="button" onClick={() => removeCustomItem(index)} className={styles.removeBtn}>
-                  remover
-                </button>
-              </div>
-            ))}
-            <div className={styles.customItemAdd}>
-              <input
-                type="text"
-                value={customItemDraft}
-                onChange={(e) => setCustomItemDraft(e.target.value)}
-                placeholder="Adicionar item customizado de checklist"
-                className={styles.input}
-              />
-              <Button type="button" variant="secondary" onClick={addCustomItem}>
-                Adicionar
-              </Button>
-            </div>
-          </div>
-        </fieldset>
-
-        <Button type="submit">Gerar link</Button>
+        <Button type="submit" disabled={pending}>
+          {pending ? "Gerando..." : "Gerar link"}
+        </Button>
       </form>
 
-      {generatedLink && (
+      {generatedSlug && (
         <div className={styles.resultCard}>
           <h3>Link gerado</h3>
           <p className={styles.resultSummary}>
-            Projeto: {name || "(sem nome)"} · Tipo: {contentTypeOptions.find((o) => o.value === contentType)?.label}
+            Projeto: {title} · Tipo: {contentTypeOptions.find((o) => o.value === contentType)?.label}
           </p>
           <div className={styles.linkRow}>
-            <input type="text" readOnly value={`https://${generatedLink}`} className={styles.linkInput} />
+            <input
+              type="text"
+              readOnly
+              value={`https://validate.com/p/${generatedSlug}`}
+              className={styles.linkInput}
+            />
             <Button type="button" variant="secondary" onClick={handleCopy}>
               {copied ? "Copiado!" : "Copiar link"}
             </Button>
           </div>
-          <p className={styles.resultHint}>
-            Neste protótipo, todo link gerado leva à mesma página de exemplo (
-            <code>/p/{DEMO_PROJECT_ID}</code>) para você ver como ficaria o fluxo de validação.
-          </p>
-          <Button href={`/p/${DEMO_PROJECT_ID}`}>Ver como ficaria</Button>
+          <Button href={`/p/${generatedSlug}`}>Ver como ficaria</Button>
         </div>
       )}
     </>

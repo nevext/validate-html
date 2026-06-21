@@ -8,8 +8,8 @@ export default function CreateProjectPage() {
       <section className={`${styles.page} container`}>
         <h1 className={styles.title}>Criar projeto</h1>
         <p className={styles.subtitle}>
-          Anexe o conteúdo que deseja validar e monte o checklist que outras pessoas vão responder.
-          Esta é uma versão de protótipo — nenhum dado é salvo de verdade ainda.
+          Anexe o conteúdo que deseja validar. Você vai receber um link único pra compartilhar — quem
+          abrir responde um checklist rápido de design, UX e bugs, sem precisar de conta.
         </p>
         <CreateProjectForm />
       </section>

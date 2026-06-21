@@ -2,6 +2,21 @@
 
 Histórico das mudanças feitas durante a migração do Validate de HTML/CSS/JS estático para Next.js. Cada entrada documenta data, o que foi alterado e o motivo.
 
+## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 3: Firestore em projetos)
+
+**O que mudou:**
+- `lib/firestore.ts`: tipos `ContentType` (`link/video/document/file`) e `ProjectDoc`, e as funções `createProject` (gera um slug aleatório de 6 caracteres e grava em `projects`), `getProjectBySlug` e `getProjectsByOwner`. Comentário no topo do arquivo avisando sobre o modo de teste das regras (ver aviso completo abaixo).
+- `components/CreateProjectForm.tsx`: simplificado — sem o construtor de checklist customizado (nome, tipo de conteúdo e URL), usa `useAuth()` para o `ownerId` e grava de verdade no Firestore. O link gerado agora é real (`validate.com/p/<slug>`) e funciona com o botão "Ver como ficaria" apontando pro slug de verdade.
+- `app/create/page.tsx`: texto atualizado (não é mais "protótipo, nada é salvo" — agora salva de verdade).
+
+**Por que simplificar o checklist:** a coleção `validations` (próxima etapa) tem formato fixo — `designRating`, `uxRating`, `bugs`, `comment` — sem espaço para um checklist por projeto. Então o construtor de checklist na criação deixou de ter efeito; toda validação pública vai usar sempre esse mesmo formato fixo.
+
+**Pendência temporária:** `app/p/[id]` e o dashboard ainda leem de `lib/mock-data.ts` (não dos projetos reais) — isso muda na próxima entrada, junto com a coleção `validations`. Por isso `ContentPreview` ainda não foi atualizado para os novos tipos `link/video/document/file` (fica pra quando a página pública for reescrita, pra cada commit continuar buildando sozinho).
+
+**Testado contra o Firestore real:** criei um projeto de teste pelo `/create` logado e confirmei que o Firestore gravou o documento e devolveu um link funcional com slug novo.
+
+**Aviso de segurança (lembrete):** as regras do Firestore continuam em modo de teste. Antes de uso público real, precisamos escrever regras adequadas — só o dono (`ownerId`) deve poder editar/excluir seu projeto.
+
 ## 2026-06-21 — Troca de stack de auth/dados: Auth.js+Prisma → Firebase (parte 2: autenticação)
 
 **O que mudou:**
